@@ -22,7 +22,7 @@ export class HttpinterceptorService implements HttpInterceptor{
     withCredentials: true;
    
      let  token=localStorage.getItem('token');
-     let tokentype =localStorage.getItem('tokenType');
+     let tokentype =localStorage.getItem('tokentype');
 
       if (token ==null){
       
@@ -31,7 +31,7 @@ export class HttpinterceptorService implements HttpInterceptor{
         token = tokentype+" "+token;
       }
         
-       
+       debugger;     
     req = req.clone({
       setHeaders:{"Authorization":token},withCredentials: true    });
         

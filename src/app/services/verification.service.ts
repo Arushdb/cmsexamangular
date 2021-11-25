@@ -25,16 +25,16 @@ export class VerificationService {
         console.log("enviorment=",this.url);  
         var myurl ="";
         let headers: HttpHeaders= new HttpHeaders();
-        if(myparam.xmltojs=="Y"){
-          headers=headers.set('format', 'format');// format the response data from xml to json
-        }else{
-          headers=headers.set('format', 'None');// format the response data from xml to json
-        } 
+        // if(myparam.xmltojs=="Y"){
+        //   headers=headers.set('format', 'format');// format the response data from xml to json
+        // }else{
+        //   headers=headers.set('format', 'None');// format the response data from xml to json
+        // } 
         //myurl = this.url+myparam.method ;
         myurl = this.url + "verificationagency";
         console.log(console.log(myurl));
         const body = {};
-        return  this.httpclient.get(myurl,{headers,responseType: 'text', params});      
+        return  this.httpclient.get(myurl,{headers,responseType: 'json'});      
         
     }
     

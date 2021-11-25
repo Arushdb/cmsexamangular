@@ -131,7 +131,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
         this.subs.add= this.verservice.getdata(v_params,obj).subscribe(
                         res=>{
                           this.spinnerstatus=false;
-                          res = JSON.parse(res);
+                         // res = JSON.parse(res);
                           this.agencyresultHandler(res);
                          // console.log(res);    
                         },error=>{
