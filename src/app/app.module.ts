@@ -5,8 +5,8 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import {LoginModule} from 'src/app/login/login.module';
-import {MenuModule} from 'src/app/menu/menu.module';
+import {LoginModule} from '../app/login/login.module'; //'src/app/login/login.module';
+import {MenuModule} from '../app/menu/menu.module';//'src/app/menu/menu.module';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -24,15 +24,14 @@ import {HttpinterceptorService} from './services/httpinterceptor.service';
 
 import { SharedModule } from './shared/shared.module';
 
-
+import {VerificationsModule} from './verifications/verifications.module';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-  
-
+    
 
   ],
   imports: [
@@ -44,8 +43,7 @@ import { SharedModule } from './shared/shared.module';
 
     LoginModule,
     MenuModule,
-
-
+    VerificationsModule,
 
     // AgGridModule.withComponents([])
 

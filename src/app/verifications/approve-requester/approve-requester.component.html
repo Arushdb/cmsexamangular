@@ -1,0 +1,25 @@
+<app-spinner [spinnerstatus] = "spinnerstatus"></app-spinner>
+<div class="card m-3" #requesterMaster >
+    <h3 class="card-header bold">Requesters Pending for Approval &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button"  class="btn btn-primary mr-1"  (click) ="onBackClose()" >Back</button>
+    </h3>
+    <div class="card-body"> 
+            <div class="form-row">
+                    <div  class="container border" *ngIf="showReqs">
+                       <ag-grid-angular  
+                        #agGrid style="width:100%; height: 200px;"
+                        class="ag-theme-alpine"
+                        [rowData]="requesterListGrid"
+                        [columnDefs]="columnDefs"
+                        (rowSelected)="onRowSelected($event)"
+                        [defaultColDef]="defaultColDef"
+                        rowSelection="single"
+                        (gridReady) ="OnGridReady($event)"
+                        [scr]
+                       >
+                       </ag-grid-angular>    
+                    </div>
+           </div>
+    </div> 
+</div>
+<app-message></app-message>

@@ -1,0 +1,33 @@
+<div class="card m-3">
+    <div class="card-header bold">Raise Request for Student Verification </div>
+    <div class="card-body">
+    <div class="form-row">
+        <div  class="col-md-6 col-lg-6 col-xs-6 col-sm-6" *ngIf="agencyCombo.length>0">
+           <app-custom-combobox 
+            (OptSelected)="agencyChangeHandler($event)" #combo 
+            [Options] ='agencyCombo' 
+            [labeltext]='agencyCombolabel' 
+            [combowidth] ="combowidth">
+           </app-custom-combobox> 
+        </div>
+        <div class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
+            <button type="button" class="btn btn-success mr-2  btn-sm"  (click) ="onAddRequester()" ><b>+</b></button>
+           <!-- &nbsp; &nbsp;
+            <button type="button" class="btn btn-success mr-2  btn-sm"  (click) ="onGetSelRequester()" ><b>G</b></button>
+            &nbsp; &nbsp;
+            <button type="button" class="btn btn-success mr-2  btn-sm"  (click) ="onDeleteRequester()" ><b>-</b></button> -->
+        </div>
+        <!--<div class="col-md-6 col-lg-6 col-xs-6 col-sm-6">
+            {{lbltext}}
+            <br>
+            &nbsp; &nbsp;
+            <button type="button" class="btn btn-success mr-2  btn-sm"  (click) ="onModifyRequester()" ><b>M</b></button>
+            
+        </div> -->
+    </div>
+    </div>
+  <div *ngIf="showOk">    
+        &nbsp;&nbsp;
+        <button type="button" class="btn btn-primary btn-primary-spacing  btn-sm " [disabled]="!enableOkBtn" (click)="onAddEnrollNumbers()" >Add Enrollment Number(s)</button> &nbsp;&nbsp;
+        <button type="button" class="btn btn-primary btn-primary-spacing  btn-sm " routerLink="/dashboard">Cancel</button><router-outlet></router-outlet>
+  </div>

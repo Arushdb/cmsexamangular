@@ -1,0 +1,77 @@
+
+<app-spinner [spinnerstatus] = "spinnerstatus"></app-spinner>
+
+<div class="card m-3" #addRequester>
+    <h3 class="card-header bold">Add Verification Agency Details </h3>
+    <div class="card-body" width="100%">
+        <form [formGroup]="requesterForm">
+            <div class="form-row">
+                <div class="form-group col-10">
+                    <label>Agency Name</label>
+                    <input type="text" formControlName="name" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
+                    <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                        <div *ngIf="f.name.errors.required">Requester Name is required</div>
+                    </div>
+                  
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-6">
+                        <label>Address</label>
+                        <input type="textarea" formControlName="address" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.address.errors }" />
+                        <div *ngIf="submitted && f.address.errors" class="invalid-feedback">
+                            <div *ngIf="f.address.errors.required">Address is required</div>
+                        </div>
+                </div>                       
+
+                <div class="form-group col-4">
+                    <label>City</label>
+                    <input type="text" formControlName="city"  class="form-control" [ngClass]="{ 'is-invalid': submitted && f.city.errors }" />
+                    <div *ngIf="submitted && f.city.errors" class="invalid-feedback">
+                        <div *ngIf="f.city.errors.required">City is required</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-6">
+                    <label>State</label>
+                    <input type="text"  formControlName="state" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.state.errors }" />
+                    <div *ngIf="submitted && f.state.errors" class="invalid-feedback">
+                        <div *ngIf="f.state.errors.required">State is required</div>
+                    </div>
+                </div>
+                <div class="form-group col-4">
+                    <label>Pincode</label>
+                    <input type="number" formControlName="pincode" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.pincode.errors }" />
+                    <div *ngIf="submitted && f.pincode.errors" class="invalid-feedback">
+                        <div *ngIf="f.pincode.errors.required">Pincode is required</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-6">
+                            <label>Email Id</label>
+                            <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                                <div *ngIf="f.email.errors.required">Email is required</div>
+                                <div *ngIf="f.email.errors.email">Email must be a valid Email Id/Address</div>
+                            </div>
+                </div>
+                <div class="form-group col-4">
+                    <label>Contact Number</label>
+                    <input type="number" formControlName="contactno" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.contactno.errors }" />
+                    <div *ngIf="submitted && f.contactno.errors" class="invalid-feedback">
+                        <div *ngIf="f.contactno.errors.required">Contact Number is required</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row" >
+                <div class="text-center form-group col">
+                    <button type="submit" class="btn btn-primary mr-1"  (click) ="onSubmit()" >Save</button>
+                    <button type="button"  class="btn btn-primary mr-1"  (click) ="onBackClose()" >Back</button>
+                </div>
+            </div>
+        </form>
+        <app-message></app-message>
+    </div> 
+</div>

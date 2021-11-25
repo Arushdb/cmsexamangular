@@ -1,0 +1,64 @@
+<app-spinner [spinnerstatus] = "spinnerstatus"></app-spinner>
+<form [formGroup]="requestForm" >
+    <div class="card m-3" #student *ngIf="openNewReqComp">
+    <h3 class="card-header bold">Add Roll Numbers</h3>
+    <div class="card-body">
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <label>Requester : </label><label style="color: blue;">{{requesterName}}</label><br>
+                   <!-- <label>Reference : </label><label style="color: blue;">{{requesterRef}}</label><br>
+                    <label>Request Mode : </label><label style="color: blue;">{{reqMode}}</label><br>
+                    <label>Request Received date : </label><label style="color: blue;">{{reqDate}}</label><br>
+                    -->
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-4 ">
+                    <label>Enrollment Number(s)</label>
+                </div>
+                <div class="form-group col-8 ">
+                    <input type="number" formControlName="enrollNumber" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.enrollNumber.errors }" />
+                    <div *ngIf="submitted && f.enrollNumber.errors" class="invalid-feedback">
+                        <div *ngIf="f.enrollNumber.errors.required">Enrollment Number is required</div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center form-row">
+                <div class="form-group col-6 ">
+                    <button   type="button" class="btn btn-primary mr-1 " (click)="addEnrollNumber()">Save</button>
+                </div>
+                <div class="form-group col-4 ">
+                    <button type="button" class="btn btn-primary mr-1"  (click) ="onBack()" >Back</button>
+                </div>    
+            </div>
+            <div class="form-row">  <!--*ngIf="rollNumListGrid.length>0"
+                <div  class="container border" *ngIf="rollNumListGrid.length>0"> -->
+                   <ag-grid-angular  
+                    #agGrid style="width:100%; height: 200px;"
+                    class="ag-theme-alpine"
+                    [rowData]="enrollNumListGrid"
+                    [columnDefs]="columnDefs"
+                    (rowSelected)="onRowSelected($event)"
+                    [defaultColDef]="defaultColDef"
+                    rowSelection="single"
+                    (gridReady) ="OnInfoGridReady($event)"
+                    [scr]
+                   >
+                   </ag-grid-angular>    
+                <!--</div>-->
+            </div>
+            <div class="text-center form-row">
+                <div class="form-group col-6 ">
+                    <button   type="button" class="btn btn-primary mr-1 " (click)="generatePdf()">Confirm</button>
+                </div>
+                <div class="form-group col-6 " visible="false">
+                    <button type="button" class="btn btn-primary mr-1"  (click) ="onSendEmail()" >Email</button>
+                </div>    
+            </div>
+    </div> 
+</div>
+<div id="comp-render" *ngIf="openRequesterComp">
+        <app-requester-master></app-requester-master>
+</div>
+</form>
+<app-message></app-message>

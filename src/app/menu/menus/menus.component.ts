@@ -1,8 +1,9 @@
 
 import { Input, ViewEncapsulation } from '@angular/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { environment } from 'src/environments/environment';
+//import { environment } from 'src/environments/environment';
 import { MenuItemComponent } from '../menu-item/menu-item.component';
+import { environment } from '../../../environments/environment';
 
 type MyType = {
   displayname:string;

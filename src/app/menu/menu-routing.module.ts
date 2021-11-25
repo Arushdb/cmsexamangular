@@ -4,6 +4,7 @@ import { RouterModule, Routes, UrlSegment } from '@angular/router';
 import { AuthGuard } from '../guards/auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MenusComponent } from './menus/menus.component';
+import { RequesterMasterComponent } from '../verifications/requester-master/requester-master.component';
 
 
 
@@ -21,8 +22,7 @@ const routes: Routes = [
 
   //  { path:"Internal_award_sheet",
   //  loadChildren: () => import('../award-sheet/award-sheet.module').then(m => m.AwardSheetModule)} ,
-
-
+  {path:'verificationRequests',component: RequesterMasterComponent},
 
 
 ],

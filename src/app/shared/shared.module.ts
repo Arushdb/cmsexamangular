@@ -25,6 +25,8 @@ import { GriddialogComponent } from './griddialog/griddialog.component';
 import { NumeriCellRendererComponent } from './numeri-cell-renderer/numeri-cell-renderer.component';
 import { AgGridModule } from 'ag-grid-angular';
 import { UploadfileComponent } from './uploadfile/uploadfile.component';
+import { ButtonCellRendererComponent } from './button-cell-renderer/button-cell-renderer.component';
+
 
 
 
@@ -37,7 +39,7 @@ import { UploadfileComponent } from './uploadfile/uploadfile.component';
     CustomComboboxComponent,
     MessageComponent,
     GriddialogComponent, 
-    NumeriCellRendererComponent, UploadfileComponent
+    NumeriCellRendererComponent, UploadfileComponent, ButtonCellRendererComponent
    
     
   ],
