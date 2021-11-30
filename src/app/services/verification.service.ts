@@ -21,62 +21,53 @@ export class VerificationService {
   
    application="CMS";
   
-   getdata(params: HttpParams,myparam){
+   /*getdata(params: HttpParams,myparam){
         console.log("enviorment=",this.url);  
         var myurl ="";
         let headers: HttpHeaders= new HttpHeaders();
-        // if(myparam.xmltojs=="Y"){
-        //   headers=headers.set('format', 'format');// format the response data from xml to json
-        // }else{
-        //   headers=headers.set('format', 'None');// format the response data from xml to json
-        // } 
-        //myurl = this.url+myparam.method ;
         myurl = this.url + "verificationagency";
         console.log(console.log(myurl));
         const body = {};
         return  this.httpclient.get(myurl,{headers,responseType: 'json'});      
         
     }
+    */
+ 
+    getdata(inpMethod){
+    console.log("enviorment=",this.url);  
+    var myurl ="";
+    let headers: HttpHeaders= new HttpHeaders();
+    myurl = this.url + inpMethod;
+    console.log(console.log(myurl));
+    const body = {};
+    return  this.httpclient.get(myurl,{headers,responseType: 'json'});      
     
+}
     getdataById(paramId, myparam){
       var myurl ="";
       let headers: HttpHeaders= new HttpHeaders();
-        if(myparam.xmltojs=="Y"){
-          headers=headers.set('format', 'format');// format the response data from xml to json
-        }else{
-          headers=headers.set('format', 'None');// format the response data from xml to json
-        }
       myurl = this.url + myparam.method + paramId;
       console.log(console.log(myurl));
-      return  this.httpclient.get(myurl,{headers,responseType: 'text'});      
+      return  this.httpclient.get(myurl,{headers,responseType: 'json'});      
     }
 
   
-    postdata(inpObj,myparam){
+    postdata(inpObj,inpMethod){
       var myurl ="";
-      let headers: HttpHeaders= new HttpHeaders();
-   
-      if(myparam.xmltojs=="Y"){
-        headers=headers.set('format', 'format');// format the response data from xml to json
-      }else{
-        headers=headers.set('format', 'None');// do not format the response data from xml to json
-      } 
-  
-      myurl = this.url+myparam.method ;
+      //let headers: HttpHeaders= new HttpHeaders();
+      myurl = this.url+inpMethod ;
       let body=inpObj ;
       console.log("in post data",body);
       return  this.httpclient.post(myurl,body,{responseType: 'json'});
     }
     
-    updatepostdata(inpObj,inpId){
+    updatepostdata(inpObj,inpMethod){
       var myurl ="";
-      let headers: HttpHeaders= new HttpHeaders();
-      myurl = this.url + inpId ;
+      myurl = this.url + inpMethod ;
       console.log("update url " + myurl);
-      headers=headers.set('format', 'None');
-      let body=inpObj ;
+      let body = inpObj ;
       console.log("in update put data",body);
-      return  this.httpclient.put(myurl,body,{headers,responseType: 'json'});
+      return  this.httpclient.put(myurl,body,{responseType: 'json'});
     }
 
     deletepostdata(inpId){

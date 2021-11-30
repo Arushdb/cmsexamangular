@@ -34,7 +34,7 @@ export class SearchagencyComponent implements AfterViewInit,OnDestroy {
   showOk:boolean = true;
   subs = new SubscriptionContainer();
   enableOkBtn:boolean = false;
-  public selReference: any[]=[];
+  public selReference: any=[];
   spinnerstatus:boolean=false;
   lbltext :string ="";
   constructor(private router:Router,
@@ -60,8 +60,10 @@ export class SearchagencyComponent implements AfterViewInit,OnDestroy {
 onAddRequester()
 {
       //call popup container to take inputs for new Requester.
+      this.verservice.clear();
+      let approved = "false"; //its from online mode and needs to be approved by Examination User.
       const dialogRef=  this.dialog.open(AddRequesterComponent, 
-        {data:{width:"100px", height:"100px", title:"Confirmation",content:"", ok:true,cancel:false,color:"warn"}
+        {data:{width:"100px", height:"100px", title:"Confirmation",content:approved, ok:true,cancel:false,color:"warn"}
       });
       dialogRef.afterClosed().subscribe(res => {
         //this.requesterListGrid = res.result;
@@ -70,15 +72,11 @@ onAddRequester()
 
 public getagencyList():void
 {
-    let obj = {xmltojs:'N', method:'None' }; 
-    let  v_params =new HttpParams();
     this.spinnerstatus=true;
-    obj.method='verificationagency';
-    v_params=v_params.set("time", this.curDate.toString());
-    this.subs.add= this.verservice.getdata(v_params,obj).subscribe(
+    let inMethod='verificationagency';
+    this.subs.add= this.verservice.getdata(inMethod).subscribe(
                     res=>{
                       this.spinnerstatus=false;
-                      //res = JSON.parse(res);
                       this.agencyresultHandler(res);   
                     },error=>{
                       this.verservice.log("There is some problem.");
@@ -109,7 +107,8 @@ public agencyChangeHandler(obj):void
     this.selectedagencyId = obj.id;
     this.selectedagencyNm = obj.label;
     this.enableOkBtn = true;
-    this.selReference = obj;
+    //this.selReference = {"agency_id":obj.id, "name":obj.lablel, "reference_no":"Online Request", "request_received_date":this.curDate,"request_mode":"Online", "email":"", "contact_number":"", "process_status":"RCV", "generated_date":"", "creator_id":"Online", "enrolno":""};
+    this.selReference = {"agency_id":"20", "name":obj.label, "reference_no":"Online Request", "request_received_date":this.curDate,"request_mode":"Online", "email":"", "contact_number":"", "process_status":"RCV", "generated_date":"", "creator_id":"Online", "enrolno":""};
     console.log("selected agency Id=" + this.selectedagencyId + "-" + this.selectedagencyNm, this.selReference);
     
   }
@@ -119,6 +118,9 @@ public agencyChangeHandler(obj):void
 
   
   onAddEnrollNumbers(){
+    this.selReference = {"agency_id":"20", "name":"", "reference_no":"Online Request", "request_received_date":this.curDate,"request_mode":"Online", "email":"", "contact_number":"", "process_status":"RCV", "generated_date":"", "creator_id":"Online", "enrolno":""};
+    console.log("selected agency Id=" + this.selectedagencyId + "-" + this.selectedagencyNm, this.selReference);
+
     const dialogRef=  this.dialog.open(AddRollNumberComponent, 
       {data:{width:"100px", height:"100px", title:"EnrollmentNumber",content:this.selReference, ok:true,cancel:false,color:"warn"}
     });
@@ -137,7 +139,7 @@ public agencyChangeHandler(obj):void
    this.subs.add= this.verservice.getdataById(paramId,obj).subscribe(
                    res=>{
                      this.spinnerstatus=false;
-                     res = JSON.parse(res);
+                    // res = JSON.parse(res);
                      console.log("get data by Id ", res); 
                      this.getDataByIdHandler(res);
                    },error=>{

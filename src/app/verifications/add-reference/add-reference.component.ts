@@ -8,15 +8,7 @@ import { MyItem} from '../../interfaces/my-item';
 import { isNullOrUndefined } from 'util';
 import { alertComponent } from '../../shared/alert/alert.component';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-
-export function onlyDigits(formControl: FormControl): {[key: string]: boolean} {
-  const DIGIT_EXPS = /^\d*$/;
-  
-  if (!formControl.value.match(DIGIT_EXPS)) {
-
-    return {'NaN': true}
-  } 
-}
+import { VerificationService } from '../../services/verification.service';
 
 
 @Component({
@@ -27,7 +19,7 @@ export function onlyDigits(formControl: FormControl): {[key: string]: boolean} {
 export class AddReferenceComponent implements OnInit,OnDestroy  {
     public obj: any = this.data.content;
     public requesterId:string=this.obj.id;
-    public requesterName:string=this.obj.requester_name;
+    public requesterName:string=this.obj.name;
   
     subs = new SubscriptionContainer();
     requesterRefForm: FormGroup;
@@ -43,7 +35,7 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
       private fb:FormBuilder,
       private dialogRef: MatDialogRef<AddReferenceComponent> ,
       @Inject(MAT_DIALOG_DATA) public data,
-      private userservice:UserService,
+      private verservice:VerificationService,
       public mdialog: MatDialog, private elementRef:ElementRef
     ) {   
           console.log("------------------inside add reference component: ",data);
@@ -56,8 +48,6 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
 
     ngOnInit() {
         this.refList = [];
-        this.refList.push({select:false, id:'3', requester_id:"2", reference_no:"275/2292/2021-22", request_mode:"Post", request_received_date:"2021-10-07", Contact_no:"",email_id:"bsaagra12@gmail.com", process_status:"Received",generated_date:""});
-        this.refList.push({select:false, id:'4', requester_id:"2", reference_no:"36590/26/49692/2020-21", request_mode:"Post", request_received_date:"2021-10-08", Contact_no:"",email_id:"bsaagra12@gmail.com", process_status:"Received",generated_date:""});
         this.requesterRefForm = this.fb.group({
           referenceNo: ['', Validators.required],
           requestMode: ['', Validators.required],
@@ -73,13 +63,10 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
     }
     
     onSubmit() {
-      //this.userservice.clear();
-      this.refList =[];
+           this.refList =[];
            if (this.requesterRefForm.invalid) {          
                return;
            }
-           //this.requesterRefForm.get('status').setValue('valid');
-           //this.changedata.emit(this.requesterRefForm);      
            console.log("referenceNo ", this.requesterRefForm.get('referenceNo').value,
            this.requesterId);
            var inpReqId = this.requesterId;
@@ -88,27 +75,45 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
            var inpDate = this.requesterRefForm.get('reqRcvDate').value;
            var inpContact = this.requesterRefForm.get('contactNumber').value;
            var inpEmail = this.requesterRefForm.get('emailId').value;
-           if (inpReqId == "1")
-           {
-              this.refList.push({select:false, id:'1', requester_id:"1", reference_no:"Your email", request_mode:"Email", request_received_date:"2021-10-04", Contact_no:"",email_id:"qualificationcheck2@authbridge.co.in", process_status:"Processed",generated_date:"2021-10-04"});
-              this.refList.push({select:false, id:'2', requester_id:"1", reference_no:"Your email", request_mode:"Email", request_received_date:"2021-10-05", Contact_no:"",email_id:"qualificationcheck@authbridge.co.in", process_status:"Received",generated_date:""});
-           }
-           else if (inpReqId =="2"){
-              this.refList.push({select:false, id:'3', requester_id:"2", reference_no:"275/2292/2021-22", request_mode:"Post", request_received_date:"2021-10-07", Contact_no:"",email_id:"bsaagra12@gmail.com", process_status:"Received",generated_date:""});
-              this.refList.push({select:false, id:'4', requester_id:"2", reference_no:"36590/26/49692/2020-21", request_mode:"Post", request_received_date:"2021-10-08", Contact_no:"",email_id:"bsaagra12@gmail.com", process_status:"Received",generated_date:""});
-           }
            this.refList.push({select:false, id:this.ctr, requester_id:inpReqId, reference_no:inpRef, request_mode:inpReqMode, request_received_date:inpDate, Contact_no:inpContact,email_id:inpEmail,  process_status:"Received",generated_date:""});
            console.log("refList.length=", this.refList.length);
-           const mdialogRef=  this.mdialog.open(alertComponent,
+           /*const mdialogRef=  this.mdialog.open(alertComponent,
             {data:{title:"Information",content:"Requester with Id = " + this.ctr + "has been added", ok:true,cancel:false,color:"success"}});	
-            this.closeConfirmWindow();
-           // display form values on success
-          // alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.registerForm.value, null, 4));
+            this.closeConfirmWindow(); */
+            //let inMethod = 'agencyreference';
+            let enrolno :any =[];
+            let inMethod = 'verificationagencyreference';
+            let formobj :any = {"agencyid":inpReqId, "contact_number":""+inpContact, "email":inpEmail,
+                              "reference_no":inpRef, "request_mode":inpReqMode, "reqrcvdate":inpDate, 
+                              "processstatus":"RCV", "remarks":"","gen_date":"",
+                              "creator_id": "EaxminationUser", "insert_time":"2021-11-28T08:14:46.000+00:00"};
+            formobj.enrolmentno = enrolno;
+            //console.log("reference formobj", formobj);
+            this.subs.add=this.verservice.postdata(formobj, inMethod).subscribe(
+            (res :any) =>{
+            this.spinnerstatus=false;
+            console.log(res);    
+            this.verservice.log("Reference Data Saved Successfully.");
+            this.spinnerstatus=false;
+            this.disableInputs();
+            debugger;
+         },error=>{
+           this.verservice.log("There is some problem." +error.originalError.error.message);
+           this.spinnerstatus=false;
+         });
     }
     
     // convenience getter for easy access to form fields
     get f() { return this.requesterRefForm.controls; }
-
+    
+    disableInputs()
+    {
+      this.requesterRefForm.controls['referenceNo'].disable();
+      this.requesterRefForm.controls['requestMode'].disable();
+      this.requesterRefForm.controls['reqRcvDate'].disable();
+      this.requesterRefForm.controls['emailId'].disable();
+      this.requesterRefForm.controls['contactNumber'].disable();
+    }
     onReset() {
         this.submitted = false;
         this.requesterRefForm.reset();
@@ -134,7 +139,7 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
 
     onchange(){
         //debugger;
-        this.userservice.clear();
+        this.verservice.clear();
     }
 
 }

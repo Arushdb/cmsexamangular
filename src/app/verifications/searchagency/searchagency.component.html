@@ -29,5 +29,6 @@
   <div *ngIf="showOk">    
         &nbsp;&nbsp;
         <button type="button" class="btn btn-primary btn-primary-spacing  btn-sm " [disabled]="!enableOkBtn" (click)="onAddEnrollNumbers()" >Add Enrollment Number(s)</button> &nbsp;&nbsp;
-        <button type="button" class="btn btn-primary btn-primary-spacing  btn-sm " routerLink="/dashboard">Cancel</button><router-outlet></router-outlet>
+        <!--line to be comented--><button type="button" class="btn btn-primary btn-primary-spacing  btn-sm " (click)="onAddEnrollNumbers()" >Add Enrollment Number(s)</button> &nbsp;&nbsp;
+        <!--<button type="button" class="btn btn-primary btn-primary-spacing  btn-sm " routerLink="/dashboard">Cancel</button><router-outlet></router-outlet>-->
   </div>

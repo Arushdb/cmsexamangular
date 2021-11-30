@@ -16,6 +16,7 @@ import { AddRollNumberComponent } from '../add-roll-number/add-roll-number.compo
 import { ButtonCellRendererComponent } from '../../shared/button-cell-renderer/button-cell-renderer.component';
 import { VerificationService } from '../../services/verification.service';
 import { ApproveRequesterComponent } from '../approve-requester/approve-requester.component';
+import { isNullOrUndefined } from 'util';
 
 
 
@@ -33,16 +34,16 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
     public showRequesterComp: boolean = true;
     public showNewReqComp:boolean = false;  //raise a new request  
     spinnerstatus: boolean;
-    public requesterListGrid: any[]=[];
-    public requesterRefListGrid: any[] =[];
-    protected reqList:any[]= [];
+    public requesterListGrid: any=[];
+    public requesterRefListGrid: any =[];
+    //protected reqList:any[]= [];
     public ctr: number = 3;
     gridOptions: GridOptions;
     public defaultColDef;
     public defaultRefColDef;
     public selReqName:string ="";
     public selReqId:string ="";
-    public showReqs:boolean = true;
+    public refreshReqGrid:boolean = false;
     public showReqRefs:boolean= false;
     public selRequester: any[]=[];
     public selReference: any[]=[];
@@ -62,20 +63,22 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
       { headerName:'Address', field: 'address' },
       { headerName:'City', field: 'city' },
       { headerName:'State', field: 'state' },
-      { headerName:'Pin Code', field: 'pincode' },      
+      { headerName:'Pin Code', field: 'pincode' } 
      ]; 
      
      columnRefDefs = [
       { headerName:'ReferenceId', field: 'id', hide:true  },
-      { headerName:'RequesterId', field: 'requester_id', hide:true },
-      { headerName:'RequesterName', field: 'requester_name', hide:true },
+      { headerName:'RequesterId', field: 'agencyid', hide:true },
+      { headerName:'RequesterName', field: 'name', hide:true },
       { headerName:'Reference Number', field: 'reference_no', checkboxSelection: true},
-      { headerName:'Received Date', field: 'request_received_date' },
+      { headerName:'Received Date', field: 'reqrcvdate' },
       { headerName:'Request Mode', field: 'request_mode' },
-      { headerName:'Reference Email', field: 'email_id' },
-      { headerName:'ContactNumber', field: 'Contact_no', hide:true },
-      { headerName:'Status', field: 'process_status', hide:true },
-      { headerName:'Generated Date', field: 'generated_date', hide:true },
+      { headerName:'Reference Email', field: 'email' },
+      { headerName:'ContactNumber', field: 'contact_number', hide:true },
+      { headerName:'Status', field: 'processstatus', hide:true },
+      { headerName:'Generated Date', field: 'gen_date', hide:true },
+      { headerName:'User', field:'creator_id', hide:true},   
+      { headerName:'EnrollmentNo', field:'enrolmentno', hide:true},
       { headerName:'Delete',
         cellRendererFramework:ButtonCellRendererComponent,
         cellRendererParams: { onClick: this.onRefDeleteClicked.bind(this), label: 'X'}
@@ -111,9 +114,8 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
 
     ngOnInit() {
         this.requesterListGrid = [];
-        //this.requesterListGrid.push({select:false, id:'1', requester_name:"Authbridge", address:"", city:"", state:"", pincode:"", Contact_no:"",email_id:"qualificationcheck2@authbridge.co.in"});
-        //this.requesterListGrid.push({select:false, id:'2', requester_name:"The District Basic Education Officer", address:"", city:"Agra", state:"Uttar Pradesh", pincode:"282010", Contact_no:"",email_id:"bsaagra12@gmail.com"});
-        this.getagencyList();
+        this.requesterRefListGrid =[];
+         this.getagencyList();
     }
      
     OnGridReady($event){
@@ -123,15 +125,12 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
     
     getagencyList():void
     {
-        let obj = {xmltojs:'N', method:'None' }; 
-        let  v_params =new HttpParams();
+        this.refreshReqGrid = false;  
         this.spinnerstatus=true;
-        obj.method='verificationagency';
-        v_params=v_params.set("time", this.curDate.toString());
-        this.subs.add= this.verservice.getdata(v_params,obj).subscribe(
+        let inMethod='verificationagency';
+        this.subs.add= this.verservice.getdata(inMethod).subscribe(
                         res=>{
                           this.spinnerstatus=false;
-                         // res = JSON.parse(res);
                           this.agencyresultHandler(res);
                          // console.log(res);    
                         },error=>{
@@ -143,7 +142,6 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
     
     agencyresultHandler(res)
     {
-      //console.log("agency", res.Details.item);
       //this.requesterListGrid = res;
       this.requesterListGrid = [];
       for (var r of res)
@@ -153,6 +151,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
           this.requesterListGrid.push(r);
         }
       } 
+      this.refreshReqGrid = true;
     }
 
     onRefClicked(e) {
@@ -160,7 +159,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
       console.log("Reference Add Clicked for rowData", sel);
       //this.agGrid.api.applyTransaction({ remove: [sel]});
       this.selRequester = sel;
-      this.selReqName = sel.requester_name;
+      this.selReqName = sel.name;
       this.selReqId = sel.id;
       console.log("Clicked Requester :", this.selReqName, this.selReqId);
       this.onRequestRefs();
@@ -189,18 +188,39 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
     }
     
     onRequestRefs(){
-      
       this.requesterRefListGrid = [];
-      if (this.selReqId == "1")
+      let inMethod='verificationagencyreference/' + this.selReqId;
+        this.subs.add= this.verservice.getdata(inMethod).subscribe(
+                        res=>{
+                          this.spinnerstatus=false;
+                          this.refresultHandler(res);   
+                        },error=>{
+                          console.log(error);
+                          this.verservice.log(error.originalError.error.message);
+                          this.spinnerstatus=false;
+                          this.refresultHandler(null);   //no data
+                        });
+     
+    }
+    
+    refresultHandler(res)
+    {
+      //this.agRefGrid.api.setRowData(res);
+      if (!isNullOrUndefined(res))
       {
-        this.requesterRefListGrid.push({select:false, id:'1', requester_id:"1", requester_name:this.selReqName, reference_no:"Your email", request_mode:"Email", request_received_date:"2021-10-04", Contact_no:"",email_id:"qualificationcheck2@authbridge.co.in", process_status:"Processed",generated_date:"2021-10-04"});
-        this.requesterRefListGrid.push({select:false, id:'2', requester_id:"1", requester_name:this.selReqName, reference_no:"Your email", request_mode:"Email", request_received_date:"2021-10-05", Contact_no:"",email_id:"qualificationcheck@authbridge.co.in", process_status:"Received",generated_date:""});
+        console.log(res); 
+        res.name = this.selReqName;
+        res.creator_id = "EaxminationUser";  
+        this.requesterRefListGrid.push(res);
       }
-      else if (this.selReqId == "2"){
-      this.requesterRefListGrid.push({select:false, id:'3', requester_id:"2", requester_name:this.selReqName, reference_no:"275/2292/2021-22", request_mode:"Post", request_received_date:"2021-10-07", Contact_no:"",email_id:"bsaagra12@gmail.com", process_status:"Received",generated_date:""});
-      this.requesterRefListGrid.push({select:false, id:'4', requester_id:"2", requester_name:this.selReqName, reference_no:"36590/26/49692/2020-21", request_mode:"Post", request_received_date:"2021-10-08", Contact_no:"",email_id:"bsaagra12@gmail.com", process_status:"Received",generated_date:""});
-      }
-      this.showReqs = false;
+      /* for (var r of res)
+      {
+        if (r.process_status == "RCV")  //requesters pending for approval
+        {
+          this.requesterRefListGrid.push(r);
+        }
+      } */ 
+      this.refreshReqGrid = false;
       this.showReqRefs = true;
     }
 
@@ -225,26 +245,29 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
         this.verservice.clear();
         //this.requesterListGrid = res.result;
         console.log("after close", res);
+        this.getagencyList();
       });
     }
 
     onAddRequester()
     {
         //call popup container to take inputs for new Requester.
+        let approved = "true"; //for examination user 
         const dialogRef=  this.dialog.open(AddRequesterComponent, 
-          {data:{width:"100px", height:"100px", title:"Add Requester",content:"", ok:true,cancel:false,color:"warn"}
+          {data:{width:"100px", height:"100px", title:"Add Requester",content:approved, ok:true,cancel:false,color:"warn"}
         });
         dialogRef.afterClosed().subscribe(res => {
           this.verservice.clear();
           //this.requesterListGrid = res.result;
           console.log("after close", res);
+          this.getagencyList();
         });
     }
     
     onRefDeleteClicked(e) {
       let del = e.rowData; //this.agGrid.api.getSelectedRows(); 
       const dialogRef=  this.dialog.open(alertComponent,
-        {data:{title:"Warning",content:"Are you sure to delete this request reference received on " + del.request_received_date + " date !", ok:true,cancel:true,color:"warn"}});
+        {data:{title:"Warning",content:"Are you sure to delete this request reference received on " + del.reqrcvdate + " date !", ok:true,cancel:true,color:"warn"}});
       console.log("Delete Reference Clicked for rowData", del);
 
       dialogRef.afterClosed().subscribe(result => {
@@ -300,7 +323,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
     }
 
     onRefBack(){
-      this.showReqs = true;
+      this.refreshReqGrid = true;
       this.showReqRefs = false;
     }
     
@@ -308,11 +331,11 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
       this.showNewReqComp = true;
       this.showRequesterComp = false;
       const dialogRef=  this.dialog.open(AddRollNumberComponent, 
-        {data:{width:"100px", height:"100px", title:"RollNumber",content:this.selReference, ok:true,cancel:false,color:"warn"}
+        {data:{width:"100px", height:"100px", title:"EnrollNumber",content:this.selReference, ok:true,cancel:false,color:"warn"}
       });
       dialogRef.afterClosed().subscribe(res => {
         //this.requesterRefListGrid = res.result;
-        console.log(res.result);
+        console.log(res);
       });
     }
     

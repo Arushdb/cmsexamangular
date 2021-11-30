@@ -9,14 +9,6 @@ import { alertComponent } from '../../shared/alert/alert.component';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { VerificationService } from '../../services/verification.service';
 
-export function onlyDigits(formControl: FormControl): {[key: string]: boolean} {
-  const DIGIT_EXPS = /^\d*$/;
-  
-  if (!formControl.value.match(DIGIT_EXPS)) {
-
-    return {'NaN': true}
-  } 
-}
 
 @Component({
   selector: 'app-add-requester',
@@ -33,7 +25,8 @@ export class AddRequesterComponent implements OnInit,OnDestroy  {
     enrvaild: boolean;
     protected reqList:any[]= [];
     public ctr: number = 3;
-    
+    approved: boolean = this.data.content;
+
     constructor(
       private fb:FormBuilder,
       private dialogRef: MatDialogRef<AddRequesterComponent> ,
@@ -41,7 +34,8 @@ export class AddRequesterComponent implements OnInit,OnDestroy  {
       private verservice:VerificationService,
       public mdialog: MatDialog, private elementRef:ElementRef
     ) {   
-          console.log("------------------inside alert",data);
+          console.log("------------------inside addrequester ",data);
+          this.verservice.clear();
     }
      
     ngOnDestroy(): void {
@@ -51,73 +45,73 @@ export class AddRequesterComponent implements OnInit,OnDestroy  {
 
     ngOnInit() {
         this.reqList = [];
-        //this.reqList.push({select:false, id:'1', requester_name:"Authbridge", address:"", city:"", state:"", pincode:"", Contact_no:"",email_id:"qualificationcheck2@authbridge.co.in"});
-        //this.reqList.push({select:false, id:'2', requester_name:"The District Basic Education Officer", address:"", city:"Agra", state:"Uttar Pradesh", pincode:"282010", Contact_no:"",email_id:"bsaagra12@gmail.com"});
-           
         this.requesterForm = this.fb.group({
           name: ['', Validators.required],
           address: [''],
           city: [''],
           state: [''],
-          pincode: [''],
-          contactno: [''],
+          pincode: ['', Validators.pattern('^[1-9]{1}[0-9]{2}\s{0,1}[0-9]{3}$')],
+          contactno: ['', Validators.pattern('^[0-9]{10}$')],
           email: ['', [Validators.required, Validators.email]],
           referenceno: [''],
           website: [''],
           authentic: [''],
         }
        );
-        this.showSubmit = true; //submit button 
+        this.showSubmit = true; //submit button
+        this.verservice.clear();
     }
-    
+
     onSubmit() {
-      //this.verservice.clear();
-      this.reqList =[];
-           if (this.requesterForm.invalid) {  
-             console.log("requestForm is invalid");        
+          //this.verservice.clear();
+          this.reqList =[];
+          this.submitted = true;
+          console.log("this.requesterForm.invalid ", this.requesterForm.invalid);
+          if (this.requesterForm.invalid) {  
+               console.log("requestForm is invalid");        
                return;
            }
-            console.log("name ", this.requesterForm.get('name').value);
+           
+          console.log("name ", this.requesterForm.get('name').value);
             
-           var inpReqName = this.requesterForm.get('name').value;
-           var inpAddress = this.requesterForm.get('address').value;
-           var inpCity = this.requesterForm.get('city').value;
-           var inpState = this.requesterForm.get('state').value;
-           var inpPin = this.requesterForm.get('pincode').value;
-           var inpContact = this.requesterForm.get('contactno').value;
-           var inpEmail = this.requesterForm.get('email').value;
-           /*this.reqList.push({select:false, id:'1', requester_name:"Authbridge", address:"", city:"", state:"", pincode:"", Contact_no:"",email_id:"qualificationcheck2@authbridge.co.in"});
-           this.reqList.push({select:false, id:'2', requester_name:"The District Basic Education Officer", address:"", city:"Agra", state:"Uttar Pradesh", pincode:"282010", Contact_no:"",email_id:"bsaagra12@gmail.com"});   
-           this.reqList.push({select:false, id:this.ctr++, requester_name:inpReqName, address:inpAddress, city:inpCity, state:inpState, pincode:inpPin, Contact_no:inpContact,email_id:inpEmail});
-           console.log("reqList.length=", this.reqList.length);
-           */
-           let obj = {xmltojs:'N', method:'None' };   
-           obj.method='verificationagency';
-           let formobj :any = {"name":inpReqName, "address":inpAddress, "city":inpCity, "state":inpState, "pincode":inpPin, "contactno":inpContact, "email":inpEmail};
+          let inpReqName = this.requesterForm.get('name').value;
+          let inpAddress = this.requesterForm.get('address').value;
+          let inpCity = this.requesterForm.get('city').value;
+          let inpState = this.requesterForm.get('state').value;
+          let inpPin = this.requesterForm.get('pincode').value;
+          let inpContact = this.requesterForm.get('contactno').value;
+          let inpEmail = this.requesterForm.get('email').value;
+          let inpAuthentic =  this.approved;  
+          let inMethod = 'verificationagency';
+          let formobj :any = {"name":inpReqName, "address":inpAddress, "city":inpCity, "state":inpState, "pincode":inpPin, "contactno":inpContact, "email":inpEmail, "authentic":inpAuthentic};
            console.log("formobj", formobj);
            
-           this.subs.add=this.verservice.postdata(formobj,obj).subscribe(
+           this.subs.add=this.verservice.postdata(formobj, inMethod).subscribe(
             (res :any) =>{
               this.spinnerstatus=false;
-              //res =  res.json();
               console.log(res);    
-              //this.agencyresultHandler(res);
               this.verservice.log("Agency Data Saved Successfully. Approval is Awaited!");
               this.spinnerstatus=false;
+              this.disableInputs();
             },error=>{
               this.verservice.log("There is some problem.");
               this.spinnerstatus=false;
             });
     }
 
-    public  agencyresultHandler(res):void
-    {
-      const mdialogRef=  this.mdialog.open(alertComponent,
-        {data:{title:"Information",content:"Requester with Id = 3 has been added", ok:true,cancel:false,color:"success"}});	
-        this.closeConfirmWindow();
-    }
     // convenience getter for easy access to form fields
     get f() { return this.requesterForm.controls; }
+
+    disableInputs()
+    {
+      this.requesterForm.controls['name'].disable();
+      this.requesterForm.controls['address'].disable();
+      this.requesterForm.controls['city'].disable();
+      this.requesterForm.controls['state'].disable();
+      this.requesterForm.controls['pincode'].disable();
+      this.requesterForm.controls['email'].disable();
+      this.requesterForm.controls['contactno'].disable();
+    }
 
     onReset() {
         this.submitted = false;

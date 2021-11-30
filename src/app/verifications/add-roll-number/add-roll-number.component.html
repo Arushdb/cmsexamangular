@@ -49,7 +49,10 @@
             </div>
             <div class="text-center form-row">
                 <div class="form-group col-6 ">
-                    <button   type="button" class="btn btn-primary mr-1 " (click)="generatePdf()">Confirm</button>
+                    <button   type="button" class="btn btn-primary mr-1 " (click)="saveRollNos()">Confirm</button>
+                </div>
+                <div class="form-group col-6 ">
+                    <button   type="button" class="btn btn-primary mr-1 " (click)="generatePdf()">GeneratePdf</button>
                 </div>
                 <div class="form-group col-6 " visible="false">
                     <button type="button" class="btn btn-primary mr-1"  (click) ="onSendEmail()" >Email</button>

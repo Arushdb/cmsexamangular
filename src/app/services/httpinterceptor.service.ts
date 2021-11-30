@@ -31,7 +31,7 @@ export class HttpinterceptorService implements HttpInterceptor{
         token = tokentype+" "+token;
       }
         
-       debugger;     
+      // debugger;     
     req = req.clone({
       setHeaders:{"Authorization":token},withCredentials: true    });
         

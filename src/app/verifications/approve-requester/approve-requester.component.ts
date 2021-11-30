@@ -87,15 +87,11 @@ export class ApproveRequesterComponent implements OnInit {
   
   getagencyList():void
   {
-      let obj = {xmltojs:'N', method:'None' }; 
-      let  v_params =new HttpParams();
       this.spinnerstatus=true;
-      obj.method='verificationagency';
-      v_params=v_params.set("time", this.curDate.toString());
-      this.subs.add= this.verservice.getdata(v_params,obj).subscribe(
+      let inMethod='verificationagency';
+      this.subs.add= this.verservice.getdata(inMethod).subscribe(
                       res=>{
                         this.spinnerstatus=false;
-                        //res = JSON.parse(res);
                         this.agencyresultHandler(res);
                        // console.log(res);    
                       },error=>{
@@ -124,9 +120,8 @@ export class ApproveRequesterComponent implements OnInit {
     //this.agGrid.api.applyTransaction({ remove: [sel]});
     this.selRequester = sel;
     this.selReqName = sel.name;
-    this.selReqId = sel.id;
     
-    console.log("Clicked Requester :", this.selReqName, this.selReqId);
+    console.log("Clicked Requester :", this.selReqName );
     const adialogRef = this.mdialog.open(alertComponent,
       {data:{title:"Confirmation",content:"Are you sure to approve Agency :" + "\n" + this.selReqName + " ?", ok:true,cancel:true,color:"warn"}});
       console.log("Approve selected agency id=", this.selReqId);
@@ -135,10 +130,10 @@ export class ApproveRequesterComponent implements OnInit {
       console.log(`Dialog result: ${result}`);
       if(result){
         console.log("approving data...", sel.authentic);
-        let methodnId ='verificationagency';
+        let inMethod ='verificationagency';
         //console.log("updateobj", updateobj);
         sel.authentic = true;
-        this.subs.add=this.verservice.updatepostdata(sel, methodnId).subscribe(
+        this.subs.add=this.verservice.updatepostdata(sel, inMethod).subscribe(
          (res :any) =>{
            this.spinnerstatus=false;
            console.log(res);    
