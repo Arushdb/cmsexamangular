@@ -189,8 +189,13 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
     
     onRequestRefs(){
       this.requesterRefListGrid = [];
-      let inMethod='verificationagencyreference/' + this.selReqId;
-        this.subs.add= this.verservice.getdata(inMethod).subscribe(
+      //let inMethod='verificationagencyreference/' + this.selReqId;
+      //let inMethod='agencyreference/' + this.selReqId;
+      let inMethod='agencyreferencebyprocessstatus/';
+      let  v_params =new HttpParams();
+      v_params=v_params.set("agencyid", this.selReqId)
+                       .set("processstatus", "RCV");
+        this.subs.add= this.verservice.getdataByIdStatus(v_params,inMethod).subscribe(
                         res=>{
                           this.spinnerstatus=false;
                           this.refresultHandler(res);   
@@ -231,7 +236,11 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
           {data:{width:"100px", height:"100px", title:"Confirmation",content:this.selRequester, ok:true,cancel:false,color:"warn"}
         });
         dialogRef.afterClosed().subscribe(res => {
+          console.log("res after ref comp closed", res);
           this.requesterRefListGrid = res.result;
+          this.verservice.clear();
+          //refresh ref grid
+          this.onRequestRefs();
         });
     }
 

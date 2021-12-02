@@ -42,7 +42,7 @@ export class VerificationService {
     const body = {};
     return  this.httpclient.get(myurl,{headers,responseType: 'json'});      
     
-}
+    }
     getdataById(paramId, myparam){
       var myurl ="";
       let headers: HttpHeaders= new HttpHeaders();
@@ -50,7 +50,15 @@ export class VerificationService {
       console.log(console.log(myurl));
       return  this.httpclient.get(myurl,{headers,responseType: 'json'});      
     }
-
+    
+    getdataByIdStatus(params: HttpParams, myparam){
+      var myurl ="";
+      let headers: HttpHeaders= new HttpHeaders();
+      console.log('params', params);
+      myurl = this.url + myparam;
+      console.log(console.log(myurl));
+      return  this.httpclient.get(myurl,{headers,responseType: 'json', params});      
+    }
   
     postdata(inpObj,inpMethod){
       var myurl ="";

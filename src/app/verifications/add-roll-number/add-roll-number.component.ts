@@ -27,7 +27,8 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
     @ViewChild('agGrid') agGrid: AgGridAngular;
     frameworkComponents: any;
     refobj: any = this.data.content;
-    requesterId:string=this.refobj.id;
+    refId:string=this.refobj.id;
+    requesterId:string=this.refobj.agencyid;
     requesterName:string= this.refobj.name; 
     requesterRef:string=this.refobj.reference_no;
     reqMode:string=this.refobj.request_mode;
@@ -51,7 +52,7 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
     //columnDefs: ColDef[];
     columnDefs = [
       { headerName:'EnrollmentNumber', field: 'enrolmentno', width:100},
-      //{ headerName:'ReferenceId', field: 'reference_id', hide:true, width:100 },
+      { headerName:'Id', field:'id', hide:true},
       { headerName:'Delete',
         cellRendererFramework:ButtonCellRendererComponent,
         cellRendererParams: { onClick: this.onDeleteClicked.bind(this), label: 'X'},
@@ -89,8 +90,38 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
         {
           this.requesterName = this.refobj.name;
         }
+        this.getEnrolmentNos();
     }
     
+    getEnrolmentNos()
+    {
+        console.log("get enrollment data for refid=", this.refId, "requesterId=", this.requesterId);
+        //get enrollment data for refId.
+        let inMethod='verificationagencyreference/' + this.refId;
+        this.subs.add= this.verservice.getdata(inMethod).subscribe(
+                        res=>{
+                          this.spinnerstatus=false;
+                          console.log("enrol data for ref id", res); 
+                          this.enrolresHandler(res);
+                        },error=>{
+                          console.log(error);
+                          this.verservice.log(error.originalError.error.message);
+                          this.spinnerstatus=false;
+                        });
+    }
+
+    enrolresHandler(res)
+    {
+      this.enrollNumListGrid =[];
+      this.agGrid.api.applyTransaction({ remove: this.enrollNumListGrid});
+      console.log("res.enrolmentno=", res.enrolmentno);
+      for (var r of res.enrolmentno)
+      {
+          this.enrollNumListGrid.push({enrolmentno:r.enrolmentno, id:r.id});
+      } 
+      this.agGrid.api.applyTransaction({ add: this.enrollNumListGrid});
+    }
+
     onDeleteClicked(e) {
       let sel = e.rowData; //this.agGrid.api.getSelectedRows(); 
       console.log("deletedClicked for rowData", sel);
@@ -138,6 +169,7 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
       this.dialogRef.close({ result: this.enrollNumListGrid });
       return;
     }
+
     saveRollNos()
     {
       this.agGrid.api.forEachNode(node => this.enrollNumListGrid.push(node.data));

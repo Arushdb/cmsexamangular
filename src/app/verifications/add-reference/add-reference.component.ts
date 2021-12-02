@@ -39,6 +39,7 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
       public mdialog: MatDialog, private elementRef:ElementRef
     ) {   
           console.log("------------------inside add reference component: ",data);
+          this.verservice.clear;
     }
      
     ngOnDestroy(): void {
@@ -96,7 +97,7 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
             this.verservice.log("Reference Data Saved Successfully.");
             this.spinnerstatus=false;
             this.disableInputs();
-            debugger;
+            //debugger;
          },error=>{
            this.verservice.log("There is some problem." +error.originalError.error.message);
            this.spinnerstatus=false;
