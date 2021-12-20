@@ -17,9 +17,9 @@ import { VerificationService } from '../../services/verification.service';
   styleUrls: ['./add-reference.component.css']
 })
 export class AddReferenceComponent implements OnInit,OnDestroy  {
-    public obj: any = this.data.content;
-    public requesterId:string=this.obj.id;
-    public requesterName:string=this.obj.name;
+    public obj: any ;
+ 
+    public requesterName:string;
   
     subs = new SubscriptionContainer();
     requesterRefForm: FormGroup;
@@ -30,6 +30,7 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
     enrvaild: boolean;
     protected refList:any[]= [];
     public ctr: number = 5;
+  agencyId: any;
     
     constructor(
       private fb:FormBuilder,
@@ -38,7 +39,11 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
       private verservice:VerificationService,
       public mdialog: MatDialog, private elementRef:ElementRef
     ) {   
-          console.log("------------------inside add reference component: ",data);
+     // this.obj = this.data.content;
+      this.agencyId=this.data.content.id;
+      console.log("Data:",this.data);
+      this.requesterName =this.data.content.name;
+      debugger;
           this.verservice.clear;
     }
      
@@ -58,9 +63,7 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
         }
        );
         this.showSubmit = true; //submit button 
-        console.log("ngOnInit requesterId=", this.requesterId, this.requesterName);
-        //this.requesterRefForm.get("requesterId").setValue( this.requesterId);
-        //this.requesterRefForm.get("requesterName").setValue(this.requesterName);
+     
     }
     
     onSubmit() {
@@ -68,9 +71,11 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
            if (this.requesterRefForm.invalid) {          
                return;
            }
-           console.log("referenceNo ", this.requesterRefForm.get('referenceNo').value,
-           this.requesterId);
-           var inpReqId = this.requesterId;
+         
+       
+          let  inpReqId = parseInt(this.agencyId);
+
+          debugger;
            var inpRef = this.requesterRefForm.get('referenceNo').value;
            var inpReqMode = this.requesterRefForm.get('requestMode').value;
            var inpDate = this.requesterRefForm.get('reqRcvDate').value;
@@ -78,29 +83,30 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
            var inpEmail = this.requesterRefForm.get('emailId').value;
            this.refList.push({select:false, id:this.ctr, requester_id:inpReqId, reference_no:inpRef, request_mode:inpReqMode, request_received_date:inpDate, Contact_no:inpContact,email_id:inpEmail,  process_status:"Received",generated_date:""});
            console.log("refList.length=", this.refList.length);
-           /*const mdialogRef=  this.mdialog.open(alertComponent,
-            {data:{title:"Information",content:"Requester with Id = " + this.ctr + "has been added", ok:true,cancel:false,color:"success"}});	
-            this.closeConfirmWindow(); */
-            //let inMethod = 'agencyreference';
+         
             let enrolno :any =[];
-            let inMethod = 'verificationagencyreference';
-            let formobj :any = {"agencyid":inpReqId, "contact_number":""+inpContact, "email":inpEmail,
+          
+            let body1 :any = {"agencyid":inpReqId, "contact_number":""+inpContact, "email":inpEmail,
                               "reference_no":inpRef, "request_mode":inpReqMode, "reqrcvdate":inpDate, 
                               "processstatus":"RCV", "remarks":"","gen_date":"",
                               "creator_id": "EaxminationUser", "insert_time":"2021-11-28T08:14:46.000+00:00"};
-            formobj.enrolmentno = enrolno;
+           
+           let body =this.requesterRefForm.getRawValue();
+                              body.enrolmentno = enrolno;
             //console.log("reference formobj", formobj);
-            this.subs.add=this.verservice.postdata(formobj, inMethod).subscribe(
+            this.subs.add=this.verservice.addVerificationReferences(body).subscribe(
             (res :any) =>{
             this.spinnerstatus=false;
             console.log(res);    
             this.verservice.log("Reference Data Saved Successfully.");
             this.spinnerstatus=false;
-            this.disableInputs();
+            this.closeConfirmWindow();
+            //this.disableInputs();
             //debugger;
          },error=>{
            this.verservice.log("There is some problem." +error.originalError.error.message);
            this.spinnerstatus=false;
+           return;
          });
     }
     

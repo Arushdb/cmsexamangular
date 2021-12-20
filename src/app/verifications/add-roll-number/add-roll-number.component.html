@@ -1,11 +1,11 @@
 <app-spinner [spinnerstatus] = "spinnerstatus"></app-spinner>
 <form [formGroup]="requestForm" >
     <div class="card m-3" #student *ngIf="openNewReqComp">
-    <h3 class="card-header bold">Add Roll Numbers</h3>
+    <h3 class="card-header bold">Add Enrolment  Numbers</h3>
     <div class="card-body">
             <div class="form-row">
                 <div class="form-group col-12">
-                    <label>Requester : </label><label style="color: blue;">{{requesterName}}</label><br>
+                    <label>Verification Agency : </label><label style="color: blue;">{{requesterName}}</label><br>
                    <!-- <label>Reference : </label><label style="color: blue;">{{requesterRef}}</label><br>
                     <label>Request Mode : </label><label style="color: blue;">{{reqMode}}</label><br>
                     <label>Request Received date : </label><label style="color: blue;">{{reqDate}}</label><br>
@@ -47,10 +47,9 @@
                    </ag-grid-angular>    
                 <!--</div>-->
             </div>
+            <!--
             <div class="text-center form-row">
-                <div class="form-group col-6 ">
-                    <button   type="button" class="btn btn-primary mr-1 " (click)="saveRollNos()">Confirm</button>
-                </div>
+                
                 <div class="form-group col-6 ">
                     <button   type="button" class="btn btn-primary mr-1 " (click)="generatePdf()">GeneratePdf</button>
                 </div>
@@ -58,6 +57,7 @@
                     <button type="button" class="btn btn-primary mr-1"  (click) ="onSendEmail()" >Email</button>
                 </div>    
             </div>
+            -->
     </div> 
 </div>
 <div id="comp-render" *ngIf="openRequesterComp">

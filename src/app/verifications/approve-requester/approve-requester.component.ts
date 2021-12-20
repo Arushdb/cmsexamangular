@@ -121,6 +121,9 @@ export class ApproveRequesterComponent implements OnInit {
     this.selRequester = sel;
     this.selReqName = sel.name;
     
+
+    debugger;
+    
     console.log("Clicked Requester :", this.selReqName );
     const adialogRef = this.mdialog.open(alertComponent,
       {data:{title:"Confirmation",content:"Are you sure to approve Agency :" + "\n" + this.selReqName + " ?", ok:true,cancel:true,color:"warn"}});
@@ -133,11 +136,13 @@ export class ApproveRequesterComponent implements OnInit {
         let inMethod ='verificationagency';
         //console.log("updateobj", updateobj);
         sel.authentic = true;
-        this.subs.add=this.verservice.updatepostdata(sel, inMethod).subscribe(
+        this.subs.add=this.verservice.updateVerificationAgency(sel).subscribe(
          (res :any) =>{
            this.spinnerstatus=false;
-           console.log(res);    
+           this.agGrid.api.applyTransaction({ remove: [sel]}); 
+             
            //this.verservice.log("Agency Data Updated Successfully.");
+
            this.getagencyList();
            this.spinnerstatus=false;
          },error=>{

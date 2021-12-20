@@ -14,24 +14,10 @@ export class VerificationService {
   constructor(private httpclient:HttpClient, private messagesrv:MessageService) 
   {
     this.url=environment.url;
-    //this.url= "http://exam.dei.ac.in:8080/cmsexam/api/";
-    //this.url = "http://exam.dei.ac.in:8080/cmsexam/api/test/";
-    console.log("base url:",this.url);
+   
   }
   
-   application="CMS";
   
-   /*getdata(params: HttpParams,myparam){
-        console.log("enviorment=",this.url);  
-        var myurl ="";
-        let headers: HttpHeaders= new HttpHeaders();
-        myurl = this.url + "verificationagency";
-        console.log(console.log(myurl));
-        const body = {};
-        return  this.httpclient.get(myurl,{headers,responseType: 'json'});      
-        
-    }
-    */
  
     getdata(inpMethod){
     console.log("enviorment=",this.url);  
@@ -51,86 +37,74 @@ export class VerificationService {
       return  this.httpclient.get(myurl,{headers,responseType: 'json'});      
     }
     
-    getdataByIdStatus(params: HttpParams, myparam){
+    getAgencyReferencesByStatus(params: HttpParams){
       var myurl ="";
+      let method = 'agencyreferencebyprocessstatus';
       let headers: HttpHeaders= new HttpHeaders();
       console.log('params', params);
-      myurl = this.url + myparam;
+      myurl = this.url + method;
       console.log(console.log(myurl));
       return  this.httpclient.get(myurl,{headers,responseType: 'json', params});      
     }
   
-    postdata(inpObj,inpMethod){
-      var myurl ="";
-      //let headers: HttpHeaders= new HttpHeaders();
-      myurl = this.url+inpMethod ;
-      let body=inpObj ;
-      console.log("in post data",body);
-      return  this.httpclient.post(myurl,body,{responseType: 'json'});
+    addVerificationAgency(body){
+      
+      let method = "verificationagency";
+     
+          return  this.httpclient.post(this.url+method,body,{responseType: 'json'});
+    }
+
+    updateVerificationAgency(body){
+       var method = "verificationagency";
+         
+          return  this.httpclient.put(this.url+method,body,{responseType: 'json'});
+    }
+
+   
+
+    addVerificationReferences(body){
+      
+      let method = "verificationagencyreference";
+     
+          return  this.httpclient.post(this.url+method,body,{responseType: 'json'});
     }
     
-    updatepostdata(inpObj,inpMethod){
-      var myurl ="";
-      myurl = this.url + inpMethod ;
-      console.log("update url " + myurl);
-      let body = inpObj ;
-      console.log("in update put data",body);
-      return  this.httpclient.put(myurl,body,{responseType: 'json'});
+    addEnrolmentno(body){
+      let method='verificationagencyreference';
+         
+      return  this.httpclient.put(this.url+method,body,{responseType: 'json'});
     }
 
-    deletepostdata(inpId){
-      var myurl ="";
-      myurl = this.url + inpId ;
-      console.log("update url " + myurl);
-      return  this.httpclient.delete(myurl,{responseType: 'json'});
+    deleteEnrolmentno(id){                                        
+      let method='enrolment';
+         
+      return  this.httpclient.delete(this.url+method+"/"+id,{responseType: 'text'});
     }
 
-    postFile(fileToUpload: File,myparam) {
-        let headers: HttpHeaders= new HttpHeaders();
-        const endpoint = this.url+'/uploadfile/uploadfile.htm';
+    deleteVerificationReferences(id){
+     
+      let method = "verificationagencyreference" ;
+             
+      return  this.httpclient.delete(this.url+method,{responseType:"text"});
+     
+    }
 
-        const formData: FormData = new FormData();
+    printVerificationReferences(id){
+     
+      let method = "agencyreferencepdf" +"/"+id;
+             
+      return  this.httpclient.get(this.url+method,{responseType:"text"});
+     
+    }
 
-    //
-   // formData.append('name', "myfile");
-    formData.append('name', myparam.filename);
-   formData.append('filekey', fileToUpload);
-    //formData.append('filekey', fileToUpload, fileToUpload.name);
-
-    const customHeaders = new HttpHeaders({
-      'Authorization': 'Bearer' + localStorage.getItem('token'),
-      'Accepted-Encoding': 'application/json'
-    });
-  
-    const customOptions = {
-      headers: customHeaders,
-      reportProgress: true,
-    };
-
-    if(myparam.xmltojs=="Y"){
-      headers=headers.set('format', 'format');// format the response data from xml to json
-    }else{
-      headers=headers.set('format', 'None');// do not format the response data from xml to json
-    } 
-    if( !isUndefined(myparam.filepath))
-    headers=headers.set('filepath', myparam.filepath);
-    if( !isUndefined(myparam.filename))
-    headers=headers.set('filename', myparam.filename);
-  
-
-       
+    deleteVerificationAgency(id){
       
-       //const endpoint = this.url;
-        
+      let method = "verificationagency" ;
        
-       
-        return this.httpclient
-          .post(endpoint, formData, {headers:headers,reportProgress: true, observe: 'events'})
-        //  return this.httpclient
-        //    .post(endpoint, formData)
-          
+      return  this.httpclient.delete(this.url+method+"/"+id,{responseType: 'json'});
     }
 
+   
 
 
    /** Log a UserService message with the MessageService */

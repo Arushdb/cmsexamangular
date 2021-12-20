@@ -25,7 +25,7 @@ export class AddRequesterComponent implements OnInit,OnDestroy  {
     enrvaild: boolean;
     protected reqList:any[]= [];
     public ctr: number = 3;
-    approved: boolean = this.data.content;
+    approved: boolean = false;
 
     constructor(
       private fb:FormBuilder,
@@ -53,9 +53,9 @@ export class AddRequesterComponent implements OnInit,OnDestroy  {
           pincode: ['', Validators.pattern('^[1-9]{1}[0-9]{2}\s{0,1}[0-9]{3}$')],
           contactno: ['', Validators.pattern('^[0-9]{10}$')],
           email: ['', [Validators.required, Validators.email]],
-          referenceno: [''],
+          referenceno: null,
           website: [''],
-          authentic: [''],
+          authentic: [false], 
         }
        );
         this.showSubmit = true; //submit button
@@ -66,36 +66,28 @@ export class AddRequesterComponent implements OnInit,OnDestroy  {
           //this.verservice.clear();
           this.reqList =[];
           this.submitted = true;
-          console.log("this.requesterForm.invalid ", this.requesterForm.invalid);
+      
           if (this.requesterForm.invalid) {  
                console.log("requestForm is invalid");        
                return;
            }
            
-          console.log("name ", this.requesterForm.get('name').value);
+          
             
-          let inpReqName = this.requesterForm.get('name').value;
-          let inpAddress = this.requesterForm.get('address').value;
-          let inpCity = this.requesterForm.get('city').value;
-          let inpState = this.requesterForm.get('state').value;
-          let inpPin = this.requesterForm.get('pincode').value;
-          let inpContact = this.requesterForm.get('contactno').value;
-          let inpEmail = this.requesterForm.get('email').value;
-          let inpAuthentic =  this.approved;  
-          let inMethod = 'verificationagency';
-          let formobj :any = {"name":inpReqName, "address":inpAddress, "city":inpCity, "state":inpState, "pincode":inpPin, "contactno":inpContact, "email":inpEmail, "authentic":inpAuthentic};
-           console.log("formobj", formobj);
-           
-           this.subs.add=this.verservice.postdata(formobj, inMethod).subscribe(
+         let formobj = this.requesterForm.getRawValue();
+         
+           this.subs.add=this.verservice.addVerificationAgency(formobj).subscribe(
             (res :any) =>{
               this.spinnerstatus=false;
-              console.log(res);    
+                 
               this.verservice.log("Agency Data Saved Successfully. Approval is Awaited!");
               this.spinnerstatus=false;
-              this.disableInputs();
+              this.dialogRef.close(true);
+          
             },error=>{
-              this.verservice.log("There is some problem.");
               this.spinnerstatus=false;
+              this.verservice.log(error);
+              
             });
     }
 

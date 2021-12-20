@@ -26,14 +26,14 @@ import { VerificationService } from '../../services/verification.service';
 export class AddRollNumberComponent implements OnInit,OnDestroy {
     @ViewChild('agGrid') agGrid: AgGridAngular;
     frameworkComponents: any;
-    refobj: any = this.data.content;
-    refId:string=this.refobj.id;
-    requesterId:string=this.refobj.agencyid;
-    requesterName:string= this.refobj.name; 
-    requesterRef:string=this.refobj.reference_no;
-    reqMode:string=this.refobj.request_mode;
+    refId:string;
+    requesterId:string ;
+    requesterName:string;
+    requesterRef:string ;
+    reqMode:string;
     curDate = new Date;
-    reqDate:string=this.refobj.request_received_date;
+    reqDate:string;
+    
   
     subs = new SubscriptionContainer();
     requestForm: FormGroup;
@@ -45,7 +45,7 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
     option: string;
     enrolvalid: boolean;
     enrvaild: boolean;
-    localUrl:string="http://localhost:8080/CMS" ;
+
     public enrollNumListGrid: any[]=[];
     public defaultColDef;
     styleGrid: { width: string; height: string; flex: string; };
@@ -60,6 +60,7 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
       }
       ]; 
   dialog: any;
+  refobj: any;
     constructor(
       private formBuilder:FormBuilder,
       private dialogRef: MatDialogRef<AddRollNumberComponent> ,
@@ -70,6 +71,8 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
     ) {   
           console.log("------------------inside Add enrollment numbers",data);
           console.log(this.refobj);
+          this.refobj = this.data.content;
+        
       this.defaultColDef = { sortable: true, filter: true, resizable: true, suppressSizeToFit:false };
       this.styleGrid={width: '100%', height: '30%',flex: '1 1 auto'};
     }
@@ -81,6 +84,14 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
 
     ngOnInit() {
         
+    this.refId=this.refobj.id;
+    this.requesterId=this.refobj.agencyid;
+    this.requesterName= this.refobj.name; 
+    this.requesterRef=this.refobj.reference_no;
+    this.reqMode=this.refobj.request_mode;
+    this.curDate = new Date();
+    this.reqDate=this.refobj.request_received_date;
+    
         this.requestForm = this.formBuilder.group({
            enrollNumber:['', [Validators.required,Validators.pattern('^[0-9]{10}$')]],
         }
@@ -125,6 +136,8 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
     onDeleteClicked(e) {
       let sel = e.rowData; //this.agGrid.api.getSelectedRows(); 
       console.log("deletedClicked for rowData", sel);
+      debugger;
+      let id = e.rowData.id;
       const dialogRef=  this.mdialog.open(alertComponent,
         {data:{title:"Confirmation",content:"Are you sure to delete selected roll number " + sel.enrollNumber + " ?", ok:true,cancel:true,color:"warn"}});
       console.log("DeleteRollno Clicked for rowData", sel);
@@ -132,18 +145,27 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
       dialogRef.afterClosed().subscribe(result => {
         console.log(`Dialog result: ${result}`);
         if(result){
-          this.agGrid.api.applyTransaction({ remove: [sel]});
+          debugger;
+          this.verservice.deleteEnrolmentno(id).subscribe(res=>{
+            this.agGrid.api.applyTransaction({ remove: [sel]});
+            this.verservice.log(res);
+
+          },err=>{
+            this.verservice.log(err);
+
+          });
+        
         }
       });
     }
 
-    addEnrollNumber() {
-      console.log("enrollNumber ", this.requestForm.get('enrollNumber').value);
-      var inpRollNo:string = this.requestForm.get('enrollNumber').value;
-      this.agGrid.api.applyTransaction({ add: [{enrolmentno:inpRollNo}]});
-      this.requestForm.reset(); 
-      return;
-    }
+    // addEnrollNumber() {
+    //   console.log("enrollNumber ", this.requestForm.get('enrollNumber').value);
+    //   var inpRollNo:string = this.requestForm.get('enrollNumber').value;
+    //   this.agGrid.api.applyTransaction({ add: [{enrolmentno:inpRollNo}]});
+    //   this.requestForm.reset(); 
+    //   return;
+    // }
     
     OnInfoGridReady($event){
       this.agGrid.columnApi.autoSizeAllColumns(false);
@@ -170,46 +192,52 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
       return;
     }
 
-    saveRollNos()
+    addEnrollNumber()
     {
-      this.agGrid.api.forEachNode(node => this.enrollNumListGrid.push(node.data));
-      console.log("rows in grid ", this.enrollNumListGrid);
-      if (this.enrollNumListGrid.length > 0)
-      {
-          const alertdialogRef=  this.mdialog.open(alertComponent,
-            {data:{title:"Warning",content:"Are you sure to get verification of mentioned numbers ?", ok:true,cancel:true,color:"warn"}});
-              alertdialogRef.afterClosed().subscribe(result => {
-              console.log(`Dialog result: ${result}`);
-              if(result){
+      let enrolmentno=[];
+      enrolmentno.push( this.requestForm.get('enrollNumber').value);
+      this.refobj.enrolmentno = enrolmentno;
+      this.spinnerstatus=true;
+      debugger;
+      // this.agGrid.api.forEachNode(node => this.enrollNumListGrid.push(node.data));
+      // console.log("rows in grid ", this.enrollNumListGrid);
+      // if (this.enrollNumListGrid.length > 0)
+       {
+      //     const alertdialogRef=  this.mdialog.open(alertComponent,
+      //       {data:{title:"Warning",content:"Are you sure to get verification of mentioned numbers ?", ok:true,cancel:true,color:"warn"}});
+      //         alertdialogRef.afterClosed().subscribe(result => {
+      //         console.log(`Dialog result: ${result}`);
+      //         if(result){
 
-                var enrolno :any=[];
-                for (var en=0; en < this.enrollNumListGrid.length; en++ )
-                {
-                  enrolno[en] = this.enrollNumListGrid[en].enrolmentno;
-                }
-                console.log("enrolmentno",enrolno, "this.refobj", this.refobj);
-                this.refobj.enrolmentno = enrolno;
-                console.log("refobj", this.refobj);
-                let inMethod ='verificationagencyreference';
-                this.subs.add=this.verservice.updatepostdata(this.refobj, inMethod).subscribe(
+      //           var enrolno :any=[];
+      //           for (var en=0; en < this.enrollNumListGrid.length; en++ )
+      //           {
+      //             enrolno[en] = this.enrollNumListGrid[en].enrolmentno;
+      //           }
+      //           console.log("enrolmentno",enrolno, "this.refobj", this.refobj);
+      //           this.refobj.enrolmentno = enrolno;
+      //           console.log("refobj", this.refobj);
+      //           debugger;
+      //           let inMethod ='verificationagencyreference';
+                this.subs.add=this.verservice.addEnrolmentno(this.refobj).subscribe(
                   (res :any) =>{
                     this.spinnerstatus=false;
-                    console.log(res);    
-                    this.verservice.log("Enrollment numbers captured Successfully.");
-                    this.spinnerstatus=false;
+                    this.agGrid.api.applyTransaction({ add: [{enrolmentno:enrolmentno[0]}]});               
+                    
+                    
                   },error=>{
                     this.verservice.log("There is some problem." +error.originalError.error.message);
                     this.spinnerstatus=false;
                   });
                 //this.generateConfirmPdf();
               }
-        });
-      }
-      else
-      {
-        this.mdialog.open(alertComponent,
-          {data:{title:"Warning",content:"Please add Enrollment Number", ok:true,cancel:false,color:"warn"}});
-      }
+      //   });
+      // }
+      // else
+      // {
+      //   this.mdialog.open(alertComponent,
+      //     {data:{title:"Warning",content:"Please add Enrollment Number", ok:true,cancel:false,color:"warn"}});
+      // }
     }
 
     generatePdf()
@@ -279,7 +307,7 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
       }
       if (resMsg.trim() === "true")
       { //report generated successfully.
-        this.pdfFilePath= this.localUrl +"/REPORTS/0001/Result/" + this.requesterId +".pdf";
+        //this.pdfFilePath= this.localUrl +"/REPORTS/0001/Result/" + this.requesterId +".pdf";
         console.log(this.pdfFilePath);
         window.open(this.pdfFilePath, '_blank');
       }

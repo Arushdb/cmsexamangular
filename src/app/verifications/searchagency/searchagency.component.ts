@@ -165,7 +165,7 @@ public agencyChangeHandler(obj):void
   {
     let methodnId ='/verificationagency';
     this.agencyDtlobj.name = "Updated " + this.agencyDtlobj.name;
-    this.subs.add=this.verservice.updatepostdata(this.agencyDtlobj, methodnId).subscribe(
+    this.subs.add=this.verservice.updateVerificationAgency(this.agencyDtlobj).subscribe(
      (res :any) =>{
        this.spinnerstatus=false;
        console.log(res);    
@@ -184,10 +184,12 @@ public agencyChangeHandler(obj):void
 
     adialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
+
+      debugger;
       if(result){
-        console.log("deleting data...");
-        let methodnId ='/verificationagency/' + this.selectedagencyId;
-        this.subs.add=this.verservice.deletepostdata(methodnId).subscribe(
+     
+
+        this.subs.add=this.verservice.deleteVerificationAgency(this.selectedagencyId).subscribe(
           (res :any) =>{
             this.spinnerstatus=false;
             console.log(res);    

@@ -1,3 +1,4 @@
+<app-message></app-message>
 
 <app-spinner [spinnerstatus] = "spinnerstatus"></app-spinner>
 <div class="card m-3" #requesterMaster >
@@ -5,7 +6,7 @@
     <div class="card-body">
             <div class="form-row">
                     <div  class="container border" *ngIf="refreshReqGrid">
-                     <label><b>Requesters List</b></label> &nbsp; &nbsp; &nbsp;
+                     <label><b>Requesters List</b></label> 
                      <button type="button" class="btn btn-success mr-2  btn-sm"  (click) ="onAddRequester()" >Add new Requester</button> &nbsp; &nbsp;
                      <button type="button" class="btn btn-success mr-2  btn-sm"  (click) ="onApproveAgency()" >Approve Requester</button> 
                        <ag-grid-angular  
@@ -25,10 +26,11 @@
            <div class="form-row">
                         <div  class="container border" *ngIf="showReqRefs">
                          <label><b>Reference List of Requester :</b></label>&nbsp; &nbsp;<label  style="color:blue"><b>{{selReqName}}</b></label><br>
-                         <button type="button" class="btn btn-success mr-2  btn-sm"  (click) ="onAddReqRef()" >Add Request Reference</button> &nbsp; &nbsp;
-                         <button type="button" class="btn btn-success mr-2  btn-sm" *ngIf="showAddRollbtn" (click) ="onAddRollNumbers()" >Add Roll Number(s)</button> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                         <button type="button" class="btn btn-success mr-2  btn-sm"  (click) ="onRefBack()" >Back</button>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                         <button type="button" class="btn btn-success mr-2  btn-sm" >View Processed Requests</button>
+                         <button type="button" class="btn btn-success mr-2  btn-sm"  (click) ="onAddReqRef()" >Add Agency Reference</button> 
+                         <button type="button" class="btn btn-success mr-2  btn-sm" *ngIf="showbtn" (click) ="onPrintClicked()" >Print Report</button>
+                         <button type="button" class="btn btn-success mr-2  btn-sm" *ngIf="showbtn" (click) ="onAddEnrolmentNumbers()" >View Enrolment No(s)</button> 
+                         <button type="button" class="btn btn-success mr-2  btn-sm"  (click) ="onRefBack()" >Back</button>
+
                            <ag-grid-angular  
                             #agRefGrid style="width:100%; height: 200px;"
                             class="ag-theme-alpine"
@@ -38,6 +40,7 @@
                             [defaultColDef]="defaultRefColDef"
                             rowSelection="single"
                             (gridReady) ="OnRefGridReady($event)"
+                            [gridOptions]="gridOptions"
                             [scr]
                            >
                            </ag-grid-angular>    
@@ -45,9 +48,13 @@
                         </div>
           </div>
     </div> 
+
+  
 </div>
+
+
 <!--<div id="comp-render" *ngIf="showNewReqComp">
         <app-add-roll-number></app-add-roll-number>
 </div> -->
-<app-message></app-message>
+
 
