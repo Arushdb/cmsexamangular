@@ -1,16 +1,14 @@
-import { HttpParams } from '@angular/common/http';
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, Inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute,Router, NavigationEnd } from '@angular/router';
+
+import { Component, ElementRef, OnInit, Output, ViewChild, Inject } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+
 import { SubscriptionContainer } from '../../shared/subscription-container';//'src/app/shared/subscription-container';
-import { Location} from '@angular/common';
+
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { alertComponent } from '../../shared/alert/alert.component';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridOptions } from 'ag-grid-community';
-import { AddRequesterComponent } from '../add-requester/add-requester.component';
-import { AddReferenceComponent } from '../add-reference/add-reference.component';
-import { AddRollNumberComponent } from '../add-roll-number/add-roll-number.component';
+
 import { ButtonCellRendererComponent } from '../../shared/button-cell-renderer/button-cell-renderer.component';
 import { VerificationService } from '../../services/verification.service';
 
@@ -88,8 +86,8 @@ export class ApproveRequesterComponent implements OnInit {
   getagencyList():void
   {
       this.spinnerstatus=true;
-      let inMethod='verificationagency';
-      this.subs.add= this.verservice.getdata(inMethod).subscribe(
+    
+      this.subs.add= this.verservice.getAllAgency().subscribe(
                       res=>{
                         this.spinnerstatus=false;
                         this.agencyresultHandler(res);

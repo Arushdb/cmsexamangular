@@ -86,6 +86,8 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
      
 
      ]; 
+
+ 
   
     constructor(private router: Router,
       private verservice:VerificationService,
@@ -118,6 +120,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
         this.requesterListGrid = [];
         this.requesterRefListGrid =[];
          this.getagencyList();
+      
     }
      
     OnGridReady($event){
@@ -129,8 +132,8 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
     {
         this.refreshReqGrid = false;  
         this.spinnerstatus=true;
-        let inMethod='verificationagency';
-        this.subs.add= this.verservice.getdata(inMethod).subscribe(
+      
+        this.subs.add= this.verservice.getAllAgency().subscribe(
                         res=>{
                           this.spinnerstatus=false;
                           this.agencyresultHandler(res);
@@ -339,7 +342,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
       });
     }
     
-  
+   
 
 
     onPrintClicked() {
@@ -355,17 +358,21 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
    
 
       dialogRef.afterClosed().subscribe(result => {
-        
+      
         this.spinnerstatus=true;
         if(result){
                                                                                
          debugger;
+         
         
-          this.verservice.printVerificationReferences(id).subscribe(res=>{
+          this.verservice.printVerificationReferences(id).subscribe((res:ArrayBuffer)=>{
             this.spinnerstatus=false;
           this.agRefGrid.api.applyTransaction({ remove: [del]}); 
-          this.verservice.log(res);
-      
+         
+          let file = new Blob([res], { type: 'application/pdf' }); 
+          let fileURL = URL.createObjectURL(file);
+          window.open(fileURL, '', 'height=650,width=840');
+       
 
           },err=>{
             this.spinnerstatus=false;
@@ -379,5 +386,10 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
 
         }
       });
+
+     
+
+     
+
     }
 }

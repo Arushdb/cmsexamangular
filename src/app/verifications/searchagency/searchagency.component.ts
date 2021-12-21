@@ -73,8 +73,8 @@ onAddRequester()
 public getagencyList():void
 {
     this.spinnerstatus=true;
-    let inMethod='verificationagency';
-    this.subs.add= this.verservice.getdata(inMethod).subscribe(
+    
+    this.subs.add= this.verservice.getAllAgency().subscribe(
                     res=>{
                       this.spinnerstatus=false;
                       this.agencyresultHandler(res);   

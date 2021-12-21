@@ -106,10 +106,8 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
     
     getEnrolmentNos()
     {
-        console.log("get enrollment data for refid=", this.refId, "requesterId=", this.requesterId);
-        //get enrollment data for refId.
-        let inMethod='verificationagencyreference/' + this.refId;
-        this.subs.add= this.verservice.getdata(inMethod).subscribe(
+    
+        this.subs.add= this.verservice.getEnrolmentNos(this.refId).subscribe(
                         res=>{
                           this.spinnerstatus=false;
                           console.log("enrol data for ref id", res); 

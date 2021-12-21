@@ -17,18 +17,24 @@ export class VerificationService {
    
   }
   
-  
- 
-    getdata(inpMethod){
-    console.log("enviorment=",this.url);  
-    var myurl ="";
-    let headers: HttpHeaders= new HttpHeaders();
-    myurl = this.url + inpMethod;
-    console.log(console.log(myurl));
-    const body = {};
-    return  this.httpclient.get(myurl,{headers,responseType: 'json'});      
-    
+  getAllAgency(){
+    let method = "verificationagency";
+
+    let options:Object ={responseType:'json'
+
     }
+
+  
+    return  this.httpclient.get(this.url+method,options);
+  }
+  getEnrolmentNos(refid){
+    let method = "verificationagencyreference"+"/"+refid;
+
+    let options:Object ={responseType:'json'}
+    
+    return  this.httpclient.get(this.url+method,options);
+  }
+ 
     getdataById(paramId, myparam){
       var myurl ="";
       let headers: HttpHeaders= new HttpHeaders();
@@ -91,9 +97,9 @@ export class VerificationService {
 
     printVerificationReferences(id){
      
-      let method = "agencyreferencepdf" +"/"+id;
+      let method = "getpdf" +"/"+id;
              
-      return  this.httpclient.get(this.url+method,{responseType:"text"});
+      return  this.httpclient.get(this.url+method,{responseType:"arraybuffer" as 'json'});
      
     }
 
@@ -103,7 +109,14 @@ export class VerificationService {
        
       return  this.httpclient.delete(this.url+method+"/"+id,{responseType: 'json'});
     }
-
+   
+      
+      downloadFile(id) {
+        
+        let url ="http://exam.dei.ac.in:8080/cmsexam/"+"REPORTS/"+id+".pdf";
+        return this.httpclient.get(url, {responseType: 'blob'});
+      }
+    
    
 
 
