@@ -28,7 +28,7 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
     showSubmit: boolean = true;
     enrolvalid: boolean;
     enrvaild: boolean;
-    protected refList:any[]= [];
+
     public ctr: number = 5;
   agencyId: any;
     
@@ -53,13 +53,13 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
     }
 
     ngOnInit() {
-        this.refList = [];
+     
         this.requesterRefForm = this.fb.group({
-          referenceNo: ['', Validators.required],
-          requestMode: ['', Validators.required],
-          reqRcvDate: ['', Validators.required],
-          contactNumber: [''],
-          emailId: ['', [Validators.email]],
+          reference_no: ['', Validators.required],
+          request_mode: ['', Validators.required],
+          request_received_date: ['', Validators.required],
+          contact_number: [''],
+          email: ['', [Validators.email]],
         }
        );
         this.showSubmit = true; //submit button 
@@ -67,32 +67,21 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
     }
     
     onSubmit() {
-           this.refList =[];
+         
            if (this.requesterRefForm.invalid) {          
                return;
            }
          
        
           let  inpReqId = parseInt(this.agencyId);
-
-          debugger;
-           var inpRef = this.requesterRefForm.get('referenceNo').value;
-           var inpReqMode = this.requesterRefForm.get('requestMode').value;
-           var inpDate = this.requesterRefForm.get('reqRcvDate').value;
-           var inpContact = this.requesterRefForm.get('contactNumber').value;
-           var inpEmail = this.requesterRefForm.get('emailId').value;
-           this.refList.push({select:false, id:this.ctr, requester_id:inpReqId, reference_no:inpRef, request_mode:inpReqMode, request_received_date:inpDate, Contact_no:inpContact,email_id:inpEmail,  process_status:"Received",generated_date:""});
-           console.log("refList.length=", this.refList.length);
-         
+      
             let enrolno :any =[];
-          
-            let body1 :any = {"agencyid":inpReqId, "contact_number":""+inpContact, "email":inpEmail,
-                              "reference_no":inpRef, "request_mode":inpReqMode, "reqrcvdate":inpDate, 
-                              "processstatus":"RCV", "remarks":"","gen_date":"",
-                              "creator_id": "EaxminationUser", "insert_time":"2021-11-28T08:14:46.000+00:00"};
-           
+              
+        
            let body =this.requesterRefForm.getRawValue();
                               body.enrolmentno = enrolno;
+                              body.agencyid=inpReqId;
+                              body.processstatus="RCV";
             //console.log("reference formobj", formobj);
             this.subs.add=this.verservice.addVerificationReferences(body).subscribe(
             (res :any) =>{
@@ -100,7 +89,8 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
             console.log(res);    
             this.verservice.log("Reference Data Saved Successfully.");
             this.spinnerstatus=false;
-            this.closeConfirmWindow();
+            this.dialogRef.close();
+          
             //this.disableInputs();
             //debugger;
          },error=>{
@@ -113,32 +103,13 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
     // convenience getter for easy access to form fields
     get f() { return this.requesterRefForm.controls; }
     
-    disableInputs()
-    {
-      this.requesterRefForm.controls['referenceNo'].disable();
-      this.requesterRefForm.controls['requestMode'].disable();
-      this.requesterRefForm.controls['reqRcvDate'].disable();
-      this.requesterRefForm.controls['emailId'].disable();
-      this.requesterRefForm.controls['contactNumber'].disable();
-    }
+   
     onReset() {
         this.submitted = false;
         this.requesterRefForm.reset();
     }
 
-    //This function Close popup window on click of cancel button on window
-    public cancelConfirmWindow():void 
-    {
-      this.closeConfirmWindow();
-    } 
-
-    //This function Close popup window on click of close sign at corner on window
-    public closeConfirmWindow():void
-    {
-      //PopUpManager.removePopUp(this);			
-      this.dialogRef.close({ result: this.refList });
-      return;
-    }
+   
     
     onBackClose() {
       this.dialogRef.close(true);

@@ -7,9 +7,9 @@
                 <div class="form-group col-10">
                     <label><b>Requester : </b></label><label style="color: blue;"><b>{{requesterName}}</b></label><br>
                     <label>Reference </label>
-                    <input type="text" formControlName="referenceNo" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.referenceNo.errors }" />
-                    <div *ngIf="submitted && f.referenceNo.errors" class="invalid-feedback">
-                        <div *ngIf="f.referenceNo.errors.required">Reference is required</div>
+                    <input type="text" formControlName="reference_no" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.reference_no.errors }" />
+                    <div *ngIf="submitted && f.reference_no.errors" class="invalid-feedback">
+                        <div *ngIf="f.reference_no.errors.required">Reference is required</div>
                     </div>
                   
                 </div>
@@ -17,7 +17,7 @@
             <div class="form-row">
                 <div class="form-group col-4">
                         <label>Request Mode</label>
-                        <select  formControlName="requestMode" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.requestMode.errors }">
+                        <select  formControlName="request_mode" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.request_mode.errors }">
                             <option value=""></option>
                             <option value="Email">Email</option>
                             <option value="Post">Post</option>
@@ -26,7 +26,7 @@
 
                 <div class="form-group col-6">
                     <label>Received Date</label>
-                    <input type="date"  formControlName="reqRcvDate" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.reqRcvDate.errors }" />
+                    <input type="date"  formControlName="request_received_date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.request_received_date.errors }" />
                     <div *ngIf="submitted && f.reqRdvDate.errors" class="invalid-feedback">
                         <div *ngIf="f.reqRdvDate.errors.required">Request Received Date is required</div>
                         <div *ngIf="f.reqRdvDate.errors.pattern">Date must be a valid date in the format YYYY-MM-DD</div>
@@ -36,17 +36,17 @@
             <div class="form-row">
                 <div class="form-group col-6">
                             <label>Email Id</label>
-                            <input type="text" formControlName="emailId" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.emailId.errors }" />
-                            <div *ngIf="submitted && f.emailId.errors" class="invalid-feedback">
-                                <div *ngIf="f.emailId.errors.required">Email is required</div>
-                                <div *ngIf="f.emailId.errors.emailId">Email must be a valid Email Id/Address</div>
+                            <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                                <div *ngIf="f.email.errors.required">Email is required</div>
+                                <div *ngIf="f.email.errors.email">Email must be a valid Email Id/Address</div>
                             </div>
                 </div>
                 <div class="form-group col-4">
                     <label>Contact Number</label>
-                    <input type="number" formControlName="contactNumber" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.contactNumber.errors }" />
-                    <div *ngIf="submitted && f.contactNumber.errors" class="invalid-feedback">
-                        <div *ngIf="f.contactNumber.errors.required">Contact Number is required</div>
+                    <input type="number" formControlName="contact_number" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.contact_number.errors }" />
+                    <div *ngIf="submitted && f.contact_number.errors" class="invalid-feedback">
+                        <div *ngIf="f.contact_number.errors.required">Contact Number is required</div>
                     </div>
                 </div>
             </div>
