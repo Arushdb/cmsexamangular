@@ -27,7 +27,8 @@
                         <div  class="container border" *ngIf="showReqRefs">
                          <label><b>Reference List of Requester :</b></label>&nbsp; &nbsp;<label  style="color:blue"><b>{{selReqName}}</b></label><br>
                          <button type="button" class="btn btn-success mr-2  btn-sm"  (click) ="onAddReqRef()" >Add Agency Reference</button> 
-                         <button type="button" class="btn btn-success mr-2  btn-sm" *ngIf="showbtn" (click) ="onPrintClicked()" >Print Report</button>
+                         <button type="button" class="btn btn-success mr-2  btn-sm" *ngIf="showbtn" (click) ="onPrintpdfClicked()" >Print PDF Report</button>
+                         <button type="button" class="btn btn-success mr-2  btn-sm" *ngIf="showbtn" (click) ="onPrintdocClicked()" >Print WORD Report</button>
                          
                          <button type="button" class="btn btn-success mr-2  btn-sm" *ngIf="showbtn" (click) ="onAddEnrolmentNumbers()" >View Enrolment No(s)</button> 
                          <button type="button" class="btn btn-success mr-2  btn-sm"  (click) ="onRefBack()" >Back</button>

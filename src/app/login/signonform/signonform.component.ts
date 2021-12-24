@@ -116,8 +116,12 @@ Login(form) {
 
 		},error=>{
 	//   set status to INA to show alert message;
+	
 			this.sts="INA";
 			this.message=error.originalError.error.message;
+
+			if (isUndefined(this.message))
+			this.message=error.originalError.statusText;
 			
 		});
 

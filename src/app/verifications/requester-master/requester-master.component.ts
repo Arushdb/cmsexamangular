@@ -211,8 +211,8 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
         });
         //dialogRef.close();
         dialogRef.afterClosed().subscribe(res => {
-          console.log("res after ref comp closed", res);
-          this.requesterRefListGrid = res.result;
+         // console.log("res after ref comp closed", res);
+          //this.requesterRefListGrid = res.result;
           this.verservice.clear();
           //refresh ref grid
           this.getAgencyReferencesByStatus();
@@ -345,8 +345,8 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
    
 
 
-    onPrintClicked() {
-      debugger;
+    onPrintpdfClicked() {
+    
       let id =this.selReference["id"] ;
       // let id =e.rowData.id; //this.agGrid.api.getSelectedRows(); 
       // let del = e.rowData;
@@ -362,16 +362,65 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
         this.spinnerstatus=true;
         if(result){
                                                                                
-         debugger;
-         
+              
         
-          this.verservice.printVerificationReferences(id).subscribe((res:ArrayBuffer)=>{
+          this.verservice.printpdfVerificationReferences(id).subscribe((res:ArrayBuffer)=>{
             this.spinnerstatus=false;
           this.agRefGrid.api.applyTransaction({ remove: [del]}); 
          
           let file = new Blob([res], { type: 'application/pdf' }); 
           let fileURL = URL.createObjectURL(file);
           window.open(fileURL, '', 'height=650,width=840');
+       
+
+          },err=>{
+            this.spinnerstatus=false;
+            this.verservice.log(err);
+            
+          }
+          
+          );
+         
+         
+
+        }
+      });
+
+     
+
+     
+
+    }
+
+    onPrintdocClicked() {
+    
+      let id =this.selReference["id"] ;
+      // let id =e.rowData.id; //this.agGrid.api.getSelectedRows(); 
+      // let del = e.rowData;
+      let del = this.selReference;
+      //let id=null;
+     
+      const dialogRef=  this.dialog.open(alertComponent,
+        {data:{title:"Warning",content:"Are you sure to Print  " , ok:true,cancel:true,color:"warn"}});
+   
+
+      dialogRef.afterClosed().subscribe(result => {
+      
+        this.spinnerstatus=true;
+        if(result){
+                                                                               
+              
+        
+          this.verservice.printdocVerificationReferences(id).subscribe((res:ArrayBuffer)=>{
+            this.spinnerstatus=false;
+          this.agRefGrid.api.applyTransaction({ remove: [del]}); 
+         
+          let file = new Blob([res], { type: 'application/octet-stream' }); 
+          let link = document.createElement('a');
+          link.href = URL.createObjectURL(file);
+          link.download=id+".doc";
+          link.click();
+         
        
 
           },err=>{

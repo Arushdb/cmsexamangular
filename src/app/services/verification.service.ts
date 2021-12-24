@@ -95,9 +95,17 @@ export class VerificationService {
      
     }
 
-    printVerificationReferences(id){
+    printpdfVerificationReferences(id){
      
       let method = "getpdf" +"/"+id;
+             
+      return  this.httpclient.get(this.url+method,{responseType:"arraybuffer" as 'json'});
+     
+    }
+
+    printdocVerificationReferences(id){
+     
+      let method = "getdoc" +"/"+id;
              
       return  this.httpclient.get(this.url+method,{responseType:"arraybuffer" as 'json'});
      
