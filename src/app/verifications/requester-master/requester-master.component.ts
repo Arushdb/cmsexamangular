@@ -330,11 +330,11 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
       this.showReqRefs = false;
     }
     
-    onAddEnrolmentNumbers(){
+    onAddRollno(){
       this.showNewReqComp = true;
       this.showRequesterComp = false;
       const dialogRef=  this.dialog.open(AddRollNumberComponent, 
-        {data:{width:"100px", height:"100px", title:"EnrollNumber",content:this.selReference, ok:true,cancel:false,color:"warn"}
+        {data:{width:"100px", height:"100px", title:"Roll Number",content:this.selReference, ok:true,cancel:false,color:"warn"}
       });
       dialogRef.afterClosed().subscribe(res => {
       

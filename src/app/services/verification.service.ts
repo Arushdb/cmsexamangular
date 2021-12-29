@@ -86,6 +86,24 @@ export class VerificationService {
          
       return  this.httpclient.delete(this.url+method+"/"+id,{responseType: 'text'});
     }
+    addRollNo(body){
+      let method='verificationagencyreference';
+         
+      return  this.httpclient.put(this.url+method,body,{responseType: 'json'});
+    }
+
+    deleteRollNo(id){                                        
+      let method='rollno';
+         
+      return  this.httpclient.delete(this.url+method+"/"+id,{responseType: 'text'});
+    }
+    getRollNos(refid){
+      let method = "verificationagencyreference"+"/"+refid;
+  
+      let options:Object ={responseType:'json'}
+      
+      return  this.httpclient.get(this.url+method,options);
+    }
 
     deleteVerificationReferences(id){
      
