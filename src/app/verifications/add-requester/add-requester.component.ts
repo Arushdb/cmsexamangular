@@ -26,6 +26,9 @@ export class AddRequesterComponent implements OnInit,OnDestroy  {
     protected reqList:any[]= [];
     public ctr: number = 3;
     approved: boolean = false;
+    title:string="";
+    mode:string = "";
+    savebutton="";
 
     constructor(
       private fb:FormBuilder,
@@ -36,6 +39,7 @@ export class AddRequesterComponent implements OnInit,OnDestroy  {
     ) {   
           console.log("------------------inside addrequester ",data);
           this.verservice.clear();
+          this.mode=data.mode;
     }
      
     ngOnDestroy(): void {
@@ -56,11 +60,53 @@ export class AddRequesterComponent implements OnInit,OnDestroy  {
           referenceno: null,
           website: [''],
           authentic: [false], 
+          id:[''],
+          insert_time:[''],
+          creator_id:['']
         }
        );
         this.showSubmit = true; //submit button
         this.verservice.clear();
+       
+        this.title = this.data.title;
+        if (this.mode==='edit' || this.mode==='delete'){
+        
+          this.setdisplay();
+        }
+        if (this.mode==='edit'){
+        
+          this.savebutton= 'Update';
+        }
+        if (this.mode==='delete'){
+        
+          this.savebutton= 'Delete';
+        }
+        if (this.mode==='add'){
+        
+          this.savebutton= 'Save';
+        }
+        
+       
+        //this.requesterForm.setValue({address:this.data.content.address});
+        //this.requesterForm=this.data.content;
+
     }
+  setdisplay() {
+        this.f['id'].setValue(this.data.content.id);
+        this.f['address'].setValue(this.data.content.address);
+        this.f['name'].setValue(this.data.content.name);
+        this.f['city'].setValue(this.data.content.city);
+        this.f['pincode'].setValue(this.data.content.pincode);
+        this.f['contactno'].setValue(this.data.content.contactno);
+        this.f['email'].setValue(this.data.content.email);
+        this.f['website'].setValue(this.data.content.website);
+        this.f['state'].setValue(this.data.content.state);
+        this.f['insert_time'].setValue(this.data.content.insertime);
+        this.f['creator_id'].setValue(this.data.content.creator_id);
+        this.f['authentic'].setValue(1);
+
+        
+  }
 
     onSubmit() {
           //this.verservice.clear();
@@ -72,23 +118,68 @@ export class AddRequesterComponent implements OnInit,OnDestroy  {
                return;
            }
            
-          
+          debugger;
             
          let formobj = this.requesterForm.getRawValue();
+         if(this.mode==='add'){
+
          
            this.subs.add=this.verservice.addVerificationAgency(formobj).subscribe(
             (res :any) =>{
               this.spinnerstatus=false;
                  
-              this.verservice.log("Agency Data Saved Successfully. Approval is Awaited!");
+              
               this.spinnerstatus=false;
-              this.dialogRef.close(true);
+              this.dialogRef.close(res.name +" Agency Data Saved Successfully. Approval is Awaited!");
+              return;
           
             },error=>{
               this.spinnerstatus=false;
               this.verservice.log(error);
               
             });
+
+          }
+
+          if(this.mode==='edit'){
+            this.subs.add=this.verservice.updateVerificationAgency(formobj).subscribe(
+              (res :any) =>{
+                this.spinnerstatus=false;
+                   
+                this.verservice.log("Agency Data updated Successfully. Approval is Awaited!");
+                this.spinnerstatus=false;
+                this.dialogRef.close(res.name+" Agency Data updated Successfully");
+                return;
+            
+              },error=>{
+                this.spinnerstatus=false;
+                this.verservice.log(error);
+                
+              });
+  
+
+          }
+
+          if(this.mode==='delete'){
+            let id =this.f['id'].value;
+            
+            this.subs.add=this.verservice.deleteVerificationAgency(id).subscribe(
+              (res :any) =>{
+              
+                this.verservice.log(res);
+                this.spinnerstatus=false;
+               
+                this.dialogRef.close(res.name+ ' is deleted' );
+                return;
+            
+              },error=>{
+                this.spinnerstatus=false;
+                this.verservice.log(error);
+                
+              });
+  
+
+          }
     }
 
     // convenience getter for easy access to form fields
@@ -125,12 +216,13 @@ export class AddRequesterComponent implements OnInit,OnDestroy  {
     }
     
     onBackClose() {
-      this.dialogRef.close(true);
+      this.dialogRef.close("back");
     }  
 
     onchange(){
         //debugger;
         this.verservice.clear();
     }
+  
 
 }

@@ -74,7 +74,7 @@ public getagencyList():void
 {
     this.spinnerstatus=true;
     
-    this.subs.add= this.verservice.getAllAgency().subscribe(
+    this.subs.add= this.verservice.getActiveAgency().subscribe(
                     res=>{
                       this.spinnerstatus=false;
                       this.agencyresultHandler(res);   
@@ -185,7 +185,7 @@ public agencyChangeHandler(obj):void
     adialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
 
-      debugger;
+      
       if(result){
      
 

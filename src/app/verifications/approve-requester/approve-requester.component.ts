@@ -51,6 +51,8 @@ export class ApproveRequesterComponent implements OnInit {
     { headerName:'City', field: 'city' },
     { headerName:'State', field: 'state' },
     { headerName:'Pin Code', field: 'pincode' },      
+    { headerName:'creator_id', field: 'creator_id' },      
+    { headerName:'inserttime', field: 'insertime' },      
    ]; 
 
   constructor(private fb:FormBuilder,
@@ -80,14 +82,15 @@ export class ApproveRequesterComponent implements OnInit {
    
   OnGridReady($event){
     this.agGrid.columnApi.autoSizeAllColumns(false);
-    this.agGrid
+    
   }
   
   getagencyList():void
   {
       this.spinnerstatus=true;
     
-      this.subs.add= this.verservice.getAllAgency().subscribe(
+      //this.subs.add= this.verservice.getAllAgency().subscribe(
+      this.subs.add= this.verservice.getNonApprovedAgency().subscribe(
                       res=>{
                         this.spinnerstatus=false;
                         this.agencyresultHandler(res);
@@ -103,10 +106,12 @@ export class ApproveRequesterComponent implements OnInit {
   {
     //console.log("agency", res.Details.item);
     this.requesterListGrid = [];
+    
     for (var r of res)
     {
       if (r.authentic == false)  //requesters pending for approval
       {
+        
         this.requesterListGrid.push(r);
       }
     } 
@@ -120,7 +125,7 @@ export class ApproveRequesterComponent implements OnInit {
     this.selReqName = sel.name;
     
 
-    debugger;
+    
     
     console.log("Clicked Requester :", this.selReqName );
     const adialogRef = this.mdialog.open(alertComponent,

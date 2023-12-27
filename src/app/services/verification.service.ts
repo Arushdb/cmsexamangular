@@ -23,10 +23,33 @@ export class VerificationService {
     let options:Object ={responseType:'json'
 
     }
+ 
 
   
     return  this.httpclient.get(this.url+method,options);
   }
+
+  getNonApprovedAgency(){
+    let method = "authenticverificationagency/0";
+
+    let options:Object ={responseType:'json'
+
+    }
+
+    return  this.httpclient.get(this.url+method,options);
+  }
+
+  getActiveAgency(){
+    let method = "activeagency";
+
+    let options:Object ={responseType:'json'
+
+    }
+
+    return  this.httpclient.get(this.url+method,options);
+  }
+
+
   getEnrolmentNos(refid){
     let method = "verificationagencyreference"+"/"+refid;
 
@@ -59,6 +82,21 @@ export class VerificationService {
      
           return  this.httpclient.post(this.url+method,body,{responseType: 'json'});
     }
+
+    getVerificationAgency(id){
+      
+      let method = "verificationagency/"+id;
+      let headers: HttpHeaders= new HttpHeaders();
+       let params:HttpParams = new HttpParams();
+       params.set("id",id);
+      console.log('params', params);
+     let  myurl = this.url + method;
+      console.log(console.log(myurl));
+      return  this.httpclient.get(myurl,{headers,responseType: 'json', params}); 
+         
+    }
+
+
 
     updateVerificationAgency(body){
        var method = "verificationagency";
@@ -131,9 +169,9 @@ export class VerificationService {
 
     deleteVerificationAgency(id){
       
-      let method = "verificationagency" ;
+      let method = "deleteAgency" ;
        
-      return  this.httpclient.delete(this.url+method+"/"+id,{responseType: 'json'});
+      return  this.httpclient.put(this.url+method+"/"+id,{responseType: 'json'});
     }
    
       

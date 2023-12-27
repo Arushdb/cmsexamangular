@@ -6,7 +6,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute,Router, NavigationEnd } from '@angular/router';
 import { SubscriptionContainer } from '../../shared/subscription-container';//'src/app/shared/subscription-container';
 import { Location} from '@angular/common';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { alertComponent } from '../../shared/alert/alert.component';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridOptions } from 'ag-grid-community';
@@ -56,6 +56,14 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
         cellRendererFramework:ButtonCellRendererComponent,
         cellRendererParams: { onClick: this.onRefClicked.bind(this), label: 'View'}
       },
+      { headerName:'Agency',
+        cellRendererFramework:ButtonCellRendererComponent,
+        cellRendererParams: { onClick: this.onEdit.bind(this), label: 'Edit'}
+      },
+      { headerName:'Agency',
+        cellRendererFramework:ButtonCellRendererComponent,
+        cellRendererParams: { onClick: this.onDelete.bind(this), label: 'Delete'}
+      },
       { headerName:'RequesterId', field: 'id', hide:true }, //,checkboxSelection: true 
       { headerName:'RequesterName', field: 'name'},
       { headerName:'Email', field: 'email' },
@@ -93,6 +101,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
       private verservice:VerificationService,
       private elementRef:ElementRef,
       private location:Location,
+    
       private dialog: MatDialog) 
     {
       this.gridOptions = <GridOptions>{
@@ -119,6 +128,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
     ngOnInit() {
         this.requesterListGrid = [];
         this.requesterRefListGrid =[];
+        this.showReqRefs=false;
          this.getagencyList();
       
     }
@@ -133,7 +143,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
         this.refreshReqGrid = false;  
         this.spinnerstatus=true;
       
-        this.subs.add= this.verservice.getAllAgency().subscribe(
+        this.subs.add= this.verservice.getActiveAgency().subscribe(
                         res=>{
                           this.spinnerstatus=false;
                           this.agencyresultHandler(res);
@@ -160,6 +170,9 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
     }
 
     onRefClicked(e) {
+      this.showReqRefs=true;
+      
+      this.showbtn=false;
       let sel = e.rowData; //this.agGrid.api.getSelectedRows(); 
       console.log("Reference Add Clicked for rowData", sel);
       //this.agGrid.api.applyTransaction({ remove: [sel]});
@@ -169,6 +182,107 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
       console.log("Clicked Requester :", this.selReqName, this.selReqId);
       this.getAgencyReferencesByStatus();
     }
+    onEdit(e) {
+      let sel = e.rowData; //this.agGrid.api.getSelectedRows(); 
+      
+      console.log("Reference Add Clicked for rowData", sel);
+      //this.agGrid.api.applyTransaction({ remove: [sel]});
+      this.selRequester = sel;
+      this.selReqName = sel.name;
+      this.selReqId = sel.id;
+      console.log("Clicked Requester :", this.selReqName, this.selReqId);
+
+      this.verservice.getVerificationAgency(this.selReqId).
+      subscribe((res:any)=>{console.log(res);
+       
+
+          const dialogRef=  this.dialog.open(AddRequesterComponent, 
+            {data:{
+              width:"20%",height:"20%",
+            title:"View Agency",content:res, ok:true,cancel:false,color:"warn",mode:"edit"}
+          });
+          //dialogRef.close();
+          dialogRef.afterClosed().subscribe(res => {
+           // console.log("res after ref comp closed", res);
+            //this.requesterRefListGrid = res.result;
+            this.verservice.clear();
+            if (res!=='back')
+            this.verservice.log(res);
+            this.getagencyList();
+            //refresh ref grid
+            //this.getAgencyReferencesByStatus();
+          });
+     
+    
+      
+      },
+      (error:Error)=>{console.log(error.message);
+      
+      
+      
+      });
+    }
+
+    onDelete(e) {
+      let sel = e.rowData; //this.agGrid.api.getSelectedRows(); 
+      
+      console.log("Reference Add Clicked for rowData", sel);
+      //this.agGrid.api.applyTransaction({ remove: [sel]});
+      this.selRequester = sel;
+      this.selReqName = sel.name;
+      this.selReqId = sel.id;
+      console.log("Clicked Requester :", this.selReqName, this.selReqId);
+
+      const dialogRef=  this.dialog.open(AddRequesterComponent, 
+        {data:{
+          width:"20%",height:"20%",
+        title:"View Agency",content:sel, ok:true,cancel:false,color:"warn",mode:"delete"}
+      });
+      //dialogRef.close();
+      dialogRef.afterClosed().subscribe(res => {
+       // console.log("res after ref comp closed", res);
+        //this.requesterRefListGrid = res.result;
+        this.verservice.clear();
+        if (res!=='back')
+        this.verservice.log(res);
+
+        this.getagencyList();
+        //refresh ref grid
+        //this.getAgencyReferencesByStatus();
+      });
+
+
+      // this.verservice.getVerificationAgency(this.selReqId).
+      // subscribe((res:any)=>{console.log(res);
+       
+
+      //     const dialogRef=  this.dialog.open(AddRequesterComponent, 
+      //       {data:{
+      //         width:"20%",height:"20%",
+      //       title:"View Agency",content:res, ok:true,cancel:false,color:"warn",mode:"delete"}
+      //     });
+      //     //dialogRef.close();
+      //     dialogRef.afterClosed().subscribe(res => {
+      //      // console.log("res after ref comp closed", res);
+      //       //this.requesterRefListGrid = res.result;
+      //       this.verservice.clear();
+      //       this.getagencyList();
+      //       //refresh ref grid
+      //       //this.getAgencyReferencesByStatus();
+      //     });
+     
+    
+      
+      // },
+      // (error:Error)=>{console.log(error.message);
+      
+      
+      
+      // });
+    }
+
+  
+
     
     onRowSelected(event){
       this.verservice.clear();
@@ -177,6 +291,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
     
     getAgencyReferencesByStatus(){
       this.requesterRefListGrid = [];
+     
     
       let  params =new HttpParams();
       params=params.set("agencyid", this.selReqId)
@@ -185,10 +300,10 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
                         res=>{
                           this.spinnerstatus=false;
                           //this.refresultHandler(res); 
-                          debugger;
+                          
                           this.requesterRefListGrid=res;
                           this.refreshReqGrid = false;
-                          this.showReqRefs = true;
+                          
                           
                         
                         
@@ -240,6 +355,25 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
         //call popup container to take inputs for new Requester.
         let approved = "true"; //for examination user 
         const dialogRef=  this.dialog.open(AddRequesterComponent, 
+          {data:{width:"100px", height:"100px", title:"Add Requester",content:approved, ok:true,cancel:false,color:"warn",mode:"add"}
+        });
+        dialogRef.afterClosed().subscribe(res => {
+          this.verservice.clear();
+
+          if (res!=='back')
+          this.verservice.log(res);
+          //this.requesterListGrid = res.result;
+          console.log("after close", res);
+          this.getagencyList();
+        });
+    }
+
+    onViewRequester()
+    {
+        //call popup container to take inputs for new Requester.
+        let approved = "true"; //for examination user 
+        this.showReqRefs =false;
+        const dialogRef=  this.dialog.open(AddRequesterComponent, 
           {data:{width:"100px", height:"100px", title:"Add Requester",content:approved, ok:true,cancel:false,color:"warn"}
         });
         dialogRef.afterClosed().subscribe(res => {
@@ -264,7 +398,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
         this.spinnerstatus=true;
         if(result){
                                                                                
-         debugger;
+         
         
           this.verservice.deleteVerificationReferences(id).subscribe(res=>{
             this.spinnerstatus=false;
@@ -305,6 +439,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
     }
     
     onRefRowSelected(event){
+     this.showbtn = false; 
       this.verservice.clear();
       const refgridData = this.agRefGrid.api.getSelectedNodes();
       const selectedRefGridItem = refgridData.map(node => node.data );
@@ -328,6 +463,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
     onRefBack(){
       this.refreshReqGrid = true;
       this.showReqRefs = false;
+      this.showbtn=false;
     }
     
     onAddRollno(){

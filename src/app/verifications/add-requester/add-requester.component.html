@@ -1,8 +1,8 @@
 
 <app-spinner [spinnerstatus] = "spinnerstatus"></app-spinner>
-
+<app-message></app-message>
 <div class="card m-3" #addRequester>
-    <h3 class="card-header bold">Add Verification Agency Details </h3>
+    <h3 class="card-header bold">{{title}} </h3>
     <div class="card-body" width="100%">
         <form [formGroup]="requesterForm">
             <div class="form-row">
@@ -67,11 +67,11 @@
             </div>
             <div class="form-row" >
                 <div class="text-center form-group col">
-                    <button type="submit" class="btn btn-primary mr-1"  (click) ="onSubmit()" >Save</button>
+                    <button type="submit" class="btn btn-primary mr-1"  (click) ="onSubmit()" >{{savebutton}}</button>
                     <button type="button"  class="btn btn-primary mr-1"  (click) ="onBackClose()" >Back</button>
                 </div>
             </div>
         </form>
-        <app-message></app-message>
+      
     </div> 
 </div>

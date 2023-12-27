@@ -65,9 +65,11 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
 
     ngOnInit() {
         
-  
+      this.submitted=false;
         this.requestForm = this.formBuilder.group({
-          rollno:['', [Validators.required,Validators.pattern('^[0-9]{10}$')]],
+         // Pattern for numeric  roll number 
+         // rollno:['',[Validators.minLength(6),Validators.required,Validators.pattern('^(0|[1-9][0-9]*)$')]]
+          rollno:['',[Validators.minLength(6),Validators.required]]
         }
        );
       
@@ -86,6 +88,7 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
                          
                           this.verservice.log(error.originalError.error.message);
                           this.spinnerstatus=false;
+                          this.submitted=false;
                         });
     }
 
@@ -96,6 +99,7 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
      
    
       let id = e.rowData.id;
+      let rollno = e.rowData.rollno;
       const dialogRef=  this.mdialog.open(alertComponent,
         {data:{title:"Confirmation",content:"Are you sure to delete selected roll number " + sel.rollno + " ?", ok:true,cancel:true,color:"warn"}});
    
@@ -106,7 +110,7 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
          
           this.subs.add=  this.verservice.deleteRollNo(id).subscribe(res=>{
             this.agGrid.api.applyTransaction({ remove: [sel]});
-            this.verservice.log(res);
+            this.verservice.log(rollno+ " is deleted");
 
           },error=>{
             this.verservice.log(error.originalError.error.message);
@@ -136,6 +140,13 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
 
     addRollNo()
     {
+      
+      this.submitted=true;
+      if(this.requestForm.status==='INVALID'){
+     
+        return;
+      }
+   
       let rollno=[];
       rollno.push( this.requestForm.get('rollno').value);
       this.refobj.rollno = rollno;
@@ -148,7 +159,9 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
                 this.subs.add=this.verservice.addRollNo(this.refobj).subscribe(
                   (res :any) =>{
                     this.getRollNos();
+                    this.requestForm.reset();
                     this.spinnerstatus=false;
+                    this.submitted=false;
                                
                     
                     
@@ -156,6 +169,8 @@ export class AddRollNumberComponent implements OnInit,OnDestroy {
                   
                     this.verservice.log(error.originalError.error.message);
                     this.spinnerstatus=false;
+                    this.submitted=false;
+                    this.dialogRef.close();
                   });
                
               }

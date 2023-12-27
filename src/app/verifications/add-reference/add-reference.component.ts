@@ -43,7 +43,7 @@ export class AddReferenceComponent implements OnInit,OnDestroy  {
       this.agencyId=this.data.content.id;
       console.log("Data:",this.data);
       this.requesterName =this.data.content.name;
-      debugger;
+      
           this.verservice.clear;
     }
      
