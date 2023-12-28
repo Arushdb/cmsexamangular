@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  url:""
+  url:"https://admission.dei.ac.in/cmsexam/api/"
+  
 };

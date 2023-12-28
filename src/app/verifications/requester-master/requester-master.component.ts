@@ -368,21 +368,7 @@ export class RequesterMasterComponent implements OnInit,OnDestroy {
         });
     }
 
-    onViewRequester()
-    {
-        //call popup container to take inputs for new Requester.
-        let approved = "true"; //for examination user 
-        this.showReqRefs =false;
-        const dialogRef=  this.dialog.open(AddRequesterComponent, 
-          {data:{width:"100px", height:"100px", title:"Add Requester",content:approved, ok:true,cancel:false,color:"warn"}
-        });
-        dialogRef.afterClosed().subscribe(res => {
-          this.verservice.clear();
-          //this.requesterListGrid = res.result;
-          console.log("after close", res);
-          this.getagencyList();
-        });
-    }
+   
     
     onRefDeleteClicked(e) {
      
