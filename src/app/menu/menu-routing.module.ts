@@ -5,6 +5,7 @@ import { AuthGuard } from '../guards/auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MenusComponent } from './menus/menus.component';
 import { RequesterMasterComponent } from '../verifications/requester-master/requester-master.component';
+import { TranscriptComponent } from '../reports/transcript/transcript.component';
 
 
 
@@ -23,9 +24,10 @@ const routes: Routes = [
   //  { path:"Internal_award_sheet",
   //  loadChildren: () => import('../award-sheet/award-sheet.module').then(m => m.AwardSheetModule)} ,
   {path:'verificationRequests',component: RequesterMasterComponent},
+  {path:'transcript',component: TranscriptComponent},
 
 
-],
+], 
 
 
   },

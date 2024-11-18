@@ -1,0 +1,30 @@
+<div class="container">
+  <h2>Generate Transcript</h2>
+
+  <form [formGroup]="transcriptForm" (ngSubmit)="onGenerateTranscript()">
+    <div class="form-group">
+      <label for="rollNumber">Roll Number:</label>
+      <input
+        type="text"
+        id="rollNumber"
+        formControlName="rollNumber"
+        class="form-control"
+        [ngClass]="{ 'is-invalid': transcriptForm.get('rollNumber')?.invalid && transcriptForm.get('rollNumber')?.touched }"
+      />
+      <div *ngIf="transcriptForm.get('rollNumber')?.invalid && transcriptForm.get('rollNumber')?.touched" class="invalid-feedback">
+        Roll Number is required and must be at least 6 characters.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary" [disabled]="loading || transcriptForm.invalid">
+        {{ loading ? 'Generating...' : 'Generate Transcript' }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Display error messages -->
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+    {{ errorMessage }}
+  </div>
+</div>
