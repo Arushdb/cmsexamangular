@@ -25,12 +25,17 @@ import {HttpinterceptorService} from './services/httpinterceptor.service';
 import { SharedModule } from './shared/shared.module';
 
 import {VerificationsModule} from './verifications/verifications.module';
+import {ReportsModule} from  './reports/reports.module';
+
+
+
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    
     
 
   ],
@@ -44,6 +49,7 @@ import {VerificationsModule} from './verifications/verifications.module';
     LoginModule,
     MenuModule,
     VerificationsModule,
+    ReportsModule   
 
     // AgGridModule.withComponents([])
 
