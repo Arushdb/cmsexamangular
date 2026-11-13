@@ -116,12 +116,16 @@ Login(form) {
 
 		},error=>{
 	//   set status to INA to show alert message;
-	
-			this.sts="INA";
-			this.message=error.originalError.error.message;
+	console.log(error);
+			//this.sts="INA";
+			//this.message=error.originalError.error.message;
+			this.message=error.error.message;
 
-			if (isUndefined(this.message))
-			this.message=error.originalError.statusText;
+			// if (this.message==null)
+			// 	this.message=error.message;
+
+			// if (isUndefined(this.message))
+			// this.message=error.originalError.statusText;
 			
 		});
 
