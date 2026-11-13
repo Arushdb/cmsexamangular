@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
+
 import { MessageService } from './message.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class LoginService {
   url:string;
   constructor(private httpclient: HttpClient,
     private messagesrv: MessageService) { 
-      this.url=environment.url;
+      //this.url=environment.url;
+      this.url=environment.login_url;
     }
 
     signin(params:HttpParams){

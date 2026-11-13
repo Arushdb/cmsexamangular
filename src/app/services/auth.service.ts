@@ -11,7 +11,7 @@ import { UserService } from './user.service';
 export class AuthService {
 
   subs = new SubscriptionContainer();
-  login_params: HttpParams ;
+  //login_params: HttpParams ;
 
   constructor(private userservice:UserService,) {
   
@@ -27,11 +27,11 @@ export class AuthService {
     }    
 
 
-    login(credentials){
+    // login(credentials){
      
 
 
-    }
+    // }
 
     isLoggedIn(){
       

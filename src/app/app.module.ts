@@ -26,6 +26,7 @@ import { SharedModule } from './shared/shared.module';
 
 import {VerificationsModule} from './verifications/verifications.module';
 import {ReportsModule} from  './reports/reports.module';
+import { AuthInterceptor } from './auth.interceptor';
 
 
 
@@ -64,7 +65,10 @@ import {ReportsModule} from  './reports/reports.module';
   providers: [
 
     [
-      {provide : HTTP_INTERCEPTORS, useClass: HttpinterceptorService, multi: true},
+      {provide : HTTP_INTERCEPTORS, 
+       // useClass: HttpinterceptorService,
+        useClass: AuthInterceptor,
+         multi: true},
      // {provide : HTTP_INTERCEPTORS, useClass: FormatInterceptorService, multi: true}
 
 

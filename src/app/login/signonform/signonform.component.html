@@ -39,7 +39,7 @@
             
             <form class="form-signin" #form="ngForm" (ngSubmit)="Login(form.value)" 
             >
-              <div *ngIf="sts!='ACT'" >
+              <div *ngIf="message" >
                 <div class="alert alert-danger h3 mb-3 font-weight-normal" role="alert">{{message}}</div>
               </div>
               <div class="form-group m-t-10 m-b-10">
