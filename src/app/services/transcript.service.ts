@@ -1,26 +1,40 @@
+
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TranscriptService {
-  private apiUrl = 'http://localhost:8080/cmsexam/api/test/generate';
 
-  constructor(private http: HttpClient) {}
+  private url: string;
 
-  generateTranscript(rollNumber: string): Observable<Blob> {
-    const url = `${this.apiUrl}?roll_number=${rollNumber}`;
-    const headers = new HttpHeaders().set('Accept', 'application/pdf');
-    return this.http.get(url, { headers, responseType: 'blob' })
-      .pipe(
-        catchError(this.handleError)
-      );
+  constructor(private http: HttpClient) {
+    this.url = environment.url;
   }
 
-  private handleError(error: HttpErrorResponse) {
-    return throwError(error.error || 'Server error');
+  generateTranscript(rollNumber: string): Observable<Blob> {
+
+    const method = 'test/generate';
+
+    const params = new HttpParams()
+      .set('roll_number', rollNumber);
+
+    const headers = new HttpHeaders({
+      'Accept': 'application/pdf'
+    });
+
+    return this.http.get(this.url + method, {
+      headers,
+      params,
+      responseType: 'blob'
+    }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => error);
+      })
+    );
   }
 }
