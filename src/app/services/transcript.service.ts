@@ -18,7 +18,7 @@ export class TranscriptService {
 
   generateTranscript(rollNumber: string): Observable<Blob> {
 
-    const method = 'test/generate';
+    const method = 'generate';
 
     const params = new HttpParams()
       .set('roll_number', rollNumber);

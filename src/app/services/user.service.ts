@@ -13,7 +13,8 @@ import {environment} from '../../environments/environment'; // 'src/environments
 })
 export class UserService {
 
-  url = 'http://localhost:8080/cmsexam/api/auth/';
+  //url = 'http://localhost:8080/cmsexam/api/auth/';
+  url = environment.url;
   constructor(private httpclient: HttpClient,
               private messagesrv: MessageService
 
